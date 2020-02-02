@@ -1,5 +1,5 @@
 # hold shift and/or tab and/or tap [Esc] repeatedly during startup
-# modify boot paramater (e) at the spsash screen
+# modify boot paramater (e) at the splash screen
 # on the line starting with linux, after the long line of text,type:
 #  init=/bin/bash
 
