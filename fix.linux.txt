@@ -1,0 +1,11 @@
+# hold shift and/or tab and/or tap [Esc] repeatedly during startup
+# modify boot paramater (e) at the spsash screen
+# on the line starting with linux, after the long line of text,type:
+#  init=/bin/bash
+
+# Ctrl-x to force reboot using the new parameters you just set
+# grub is usually set to read only permission, so change rw permissions by typing:
+# mount -o remount,rw/
+
+
+
