@@ -1,7 +1,7 @@
 #========================================================================================
 # Linux logs & auditing
 #========================================================================================
-# Did <cups> service start on boot? -What is it's status?
+# Did <cups> service start on boot? -What is it's status? btw... cups = printer service
 systemctl status cups
 systemctl | grep -i 'cups'
 # stop/restart <cups>
