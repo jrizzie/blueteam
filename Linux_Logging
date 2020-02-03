@@ -1,0 +1,25 @@
+#========================================================================================
+# Linux logs & auditing
+#========================================================================================
+# Did <cups> service start on boot? -What is it's status?
+systemctl status cups
+systemctl | grep -i 'cups'
+# stop/restart <cups>
+sudo service <cups> stop
+sudo service <cups> start
+# where in log files does <cups> contain error logs?
+sudo lsof | grep - cups
+# (/var/log/boot.log)
+# find cups PID by running
+ps -elf | grep -i cups
+# what files are associated with the <cups> service, based on PID?
+sudo lsof -p <PID>
+# the utility ausearch queries the /var/log/audit/audit.log file.  Check running process logs in auditd log file
+sudo ausearch -w -i|grep -i cups
+# check for FAILED LOGIN attempts in thhe auditd log file
+sudo ausearch -m USER_LOGIN -sv no
+# Find user activity in auditd log file
+sudo ausearch -ua student
+sudo ausearch -ua student -ts yesterday -te now -i
+sudo ausearch -ua student -ts today -te now -i
+sudo ausearch -ua student -ts recent
