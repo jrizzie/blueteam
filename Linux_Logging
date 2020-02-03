@@ -30,6 +30,9 @@ sudo ausearch -m LOGIN
 #========================================================================================
 # Threat Hunting in Linux Logs
 #========================================================================================
+# IS THERE A RECORD OF ELEVATED NETSTAT COMMAND EXECUTION?
+sudo ausearch-i -ts recent
+# then use/search on pid & user???
 grep "user hoover" /var/log/auth.log
 # using grep; find logs for a specific por number associated with "hoover on port 4792" -example
 grep "4792" /var/log/auth.log
