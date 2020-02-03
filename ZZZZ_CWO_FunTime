@@ -53,4 +53,6 @@ cat /etc/passwd
 ps aux | grep -i ssh
 # List open files for the PID associated with SSH
 lsof -p <PID>
+# list of listening services
+netstat -lnptu
 
