@@ -22,9 +22,10 @@
 uname -r
 uname -a
 date
-#       - collect installed software
+#       - collect installed software & loaded kernel modules
 rpm -qa
 lsmod
+ls -l /lib/modules/*
 #       - collect disk information
 ls /dev/sd*
 lsblk -f
