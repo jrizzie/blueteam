@@ -23,3 +23,10 @@ sudo ausearch -ua student
 sudo ausearch -ua student -ts yesterday -te now -i
 sudo ausearch -ua student -ts today -te now -i
 sudo ausearch -ua student -ts recent
+# find user account mods and user login activity:
+sudo ausearch -m ADD_USER,DEL_USER,ADD_GROUP,ROLE_ASSIGN
+sudo ausearch -m USER_AUTH
+sudo ausearch -m LOGIN
+#========================================================================================
+# Firewalls
+#========================================================================================
