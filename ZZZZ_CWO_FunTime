@@ -46,4 +46,10 @@ w
 who
 sudo last
 cat /etc/passwd
-
+#========================================================================================
+# More collection commands
+#========================================================================================
+# Get process listing (specify SSH connection)
+ps aux | grep -i ssh
+# List open files for the PID associated with SSH
+lsof -p <PID>
