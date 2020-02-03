@@ -53,4 +53,7 @@ service iptables status (centos6)
 service firewalld status (centos7)
 systemctl -l | grep -i fire
 service ufw status
-
+# change a fw rule
+iptables -A INPUT icmp --icmp-type echo-request -j REJECT
+# verify the change using ausearch
+ausearch -i -m USER_CMD | grep -i 'iptables'
