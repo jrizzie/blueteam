@@ -43,3 +43,14 @@ tail -f /var/log/auth.log | grep 'Invalid user'
 #========================================================================================
 # Firewalls
 #========================================================================================
+# Remove all rules in a table
+iptables -F
+# Query existing rules & other FW settings
+iptables -L
+iptables-save
+iptables-restore
+service iptables status (centos6)
+service firewalld status (centos7)
+systemctl -l | grep -i fire
+service ufw status
+
