@@ -26,10 +26,16 @@ sudo ausearch -ua student -ts recent
 # find user account mods and user login activity:
 sudo ausearch -m ADD_USER,DEL_USER,ADD_GROUP,ROLE_ASSIGN
 sudo ausearch -m USER_AUTH
-sudo ausearch -m LOGIN
+*sudo ausearch -m LOGIN*
 #========================================================================================
 # Threat Hunting in Linux Logs
 #========================================================================================
+# Find SuperUID program and/or SuperGID programs/executables (hunting for persistence)
+find / -user root -perm -4000 -print0 | xargs -0 ls -l
+find / -user root -perm -4000 -print0 | xargs -0 ls -l
+find / -user root -perm -4000 -print
+# Look for logs/audit files that have been deleted or disabled
+# Look for evidence of persistence via executables in user home directories and other locations common to users.
 # IS THERE A RECORD OF ELEVATED NETSTAT COMMAND EXECUTION?
 sudo ausearch-i -ts recent
 # then use/search on pid & user???
