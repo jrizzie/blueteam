@@ -28,5 +28,15 @@ sudo ausearch -m ADD_USER,DEL_USER,ADD_GROUP,ROLE_ASSIGN
 sudo ausearch -m USER_AUTH
 sudo ausearch -m LOGIN
 #========================================================================================
+# Threat Hunting in Linux Logs
+#========================================================================================
+grep "user hoover" /var/log/auth.log
+# using grep; find logs for a specific por number associated with "hoover on port 4792" -example
+grep "4792" /var/log/auth.log
+# ^ displays "GET /scripts/samples/search?=4972HTTP/1.0""
+grep "authentication failure" /var/log/auth.log
+tail -f /var/log/auth.log | grep 'Invalid user'
+# this section is small due to the large number of data-aggregation tools used in populare SIEM (like the ELK stack used in Security Onion)
+#========================================================================================
 # Firewalls
 #========================================================================================
