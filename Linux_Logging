@@ -2,10 +2,10 @@
 # GENERAL INFO
 #========================================================================================
 /etc/rsyslog.conf: Linux log message configuration file
-Selector	Action
+Selector	            Action
 Logging Facility and Logging Priority, separated by a “.”	Specifies the action to be taken. Could be pathname, hostname, csv of users, or asterisk.
 
-System Logs	Contains
+System Logs	          Contains
 /var/log/auth.log	System auth messages such as user logins and auth type
 /var/log/boot.log	System boot up information
 /var/log/cron.log	Start/Stop information regarding cron jobs
@@ -16,12 +16,12 @@ System Logs	Contains
 /var/log/messages	Global system messages
 /var/log/secure	Info related to authentication and authorization privileges
 
-Application Logs	Contains
+Application Logs	    Contains
 /var/log/httpd	Web server logs
 /var/log/apache	Apache specific web server logs
 /var/log/samba	Samba specific logs
 
-Security Logs	Contains
+Security Logs	        Contains
 /var/run/utmp	Log of all currently logged on users.  View with w cmd.
 /var/log/wtmp	Records all logins and logouts.  View with last cmd.
 /var/log/lastlog	Last login recorded on system from users.  View with lastlog.
