@@ -10,7 +10,7 @@
 # ls $HOME/.[a-z]*
 # PS1="this will change the command prompt!"
 # !n = where (n = number) will replay historical commands starting by 1st cmd ever ran.
-# netstat -pant (tcp connections... get rid of "t" for all)
+# sudo netstat -pant (tcp connections... get rid of "t" for all)
 # cat /etc/passwd | grep 'bash'
 # cat /etc/group | grep "^daemon*" only pull the line that starts with daemon -- (man grep)
 # cat /etc/group | grep "$*daemon*" only pull the line that ends with daemon -- (man grep)
@@ -39,9 +39,9 @@ sudo lsof -i -P -n | grep LISTEN
 #       - collect network information
 arp -n
 sudo lsof -i -nP
-netstat -ano
-netstat -pant
-ss -pant
+sudo netstat -ano
+sudo netstat -pant
+sudo ss -pant
 #       - collect user information
 w
 who
@@ -55,5 +55,5 @@ ps aux | grep -i ssh
 # List open files for the PID associated with SSH
 lsof -p <PID>
 # list of listening services
-netstat -lnptu
+netstat -ptunl
 
