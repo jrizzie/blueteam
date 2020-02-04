@@ -1,0 +1,108 @@
+Boot Systems
+CentOS 6/7:
+1)	vim (filename) : This takes you into the text editor
+a)	:wq : This Writes (saves) and Quits the document (only in command mode)
+i)	Press “i” to go into insert mode, then “esc” to go back to command mode
+b)	sudo vim /boot/grub/grub.conf : To view grub config file 
+i)	Entries are how many different IOSs you can choose to boot from
+2)	cat /etc/inittab : Shows SysVinit default run level at the very bottom of output
+a)	Will also show systemctl default run target
+3)	ls -l /ect/rc(run level number).d : This will show the run control directory for whatever the default run level is that you found using the prior command
+a)	EX: If run level is 5 then command would be: ls -l /etc/rc5.d
+b)	The contents of said directory are links to actual scripts in init.d directory
+c)	Can sudo vim /etc/inittab and change default run level (must restart to have effects take place)
+4)	runlevel : If in run level 3 with no GUI, this command will show you what the currently set run level is
+a)	chkconfig --list : List of services & their run levels enabled on them
+i)	chkconfig --list | grep (#):on : To filter only the run levels on that you’d like to see
+b)	sudo init (run level #) : This changes the run level immediately 
+
+CentOS 7: (Systemd)
+1)	systemctl get-default : Identifies the default target (run level) for the CentOS 7 system
+a)	graphical = 5
+b)	multi-user = 3
+c)	Can view the graphical.target file with more /usr/lib/systemd/system/graphical.target 
+i)	Describes purpose, function, and dependencies of graphical.target
+d)	systemctl list-units : Gives a list of all units managed with systemctl
+i)	systemctl start /(stop) (unit name) : Start or stop specified unit(s)
+e)	sudo systemctl isolate (target) : To change immediately to another target/run level
+i)	Must use the target name like ...isolate multi-user.target
+2)	sudo systemctl set-default (target) : Use this to set the default target in systemctl
+a)	Target name follows same idea as above command
+b)	Use sudo systemctl reboot to restart the system and have the new default target take effect
+
+
+Basic System Configuration
+Basic Commands:
+1)	wc –l (file name): Lets you return the number of lines that the file would have
+2)	cut –f (field numbers) –d: (file name) : Lets you extract a list from the file with only the specified fields
+i)	a.       ex: If you wanted to look at the username and UID of /etc/passwd only, you’d use a –f 1,3 for the fields
+3)	 set : View all variables
+4)	 env : View environment variables
+5)	 echo $variable : To see a variable
+6)	variable=”new input” : To create a new environment variable
+7)	alias : To view all shell aliases
+i)	 alias name=’command’ : To create a new alias for the given command
+8)	/etc/passwd, /etc/group, /etc/sudoers : Look in these locations for users to have root privileges 
+9)	which (command to look for) : Lets you see the full path of the given executable 
+Finding basic system/user info:
+10)	uname –a : Shows all hardware system info like kernel version, name, release, network hostname, operating system, etc
+11)	date : Shows current date and time
+12)	 w : Shows the currently logged in users and system uptime (pulls from /var/run/utmp)
+13)	last : Shows the login/logoff info of the users and who is still logged on as well (pulls from /var/log/wtmp)
+14)	lastlog : Shows the last time a user logged onto the system (pulls from /var/log/lastlog)
+15)	lastb : Shows only failed login attempts (pulls from /var/log/btmp)
+16)	awk –F: ‘($field == #) {print $field}’ (file name) : This lets you print a specific field if the first argument matches in the file you specify
+i)	a.       ex: awk –F: ‘($3==0) {print $1}’ /etc/passwd : If the third field (UID) is zero, print the first field (username) (users with root)
+17)	rpm –qa : List installed packages
+18)	lsmod : Show the info of modules currently loaded
+19)	cat /etc/mtab : Shows currently mounted devices
+20)	cat /etc/fstab : Shows file systems mounted at startup
+21)	mount | grep (specific mount) : Find info on a specific mount on the system
+22)	df | grep (specific folder/mount) : Shows disk space usage of specified mount
+23)	cat /proc/mounts : Another place to look for mounted devices
+24)	cat /etc/sysconfig/network : To show if networking is up and the hostname as well
+25)	sudo md5sum (file) : Create hashes of file(s) specified, and can do entire directories with /* as well
+Finding Process/Service & Startup Info:
+26)	ps –efH : Displays full process list in hierarchical format
+i)	cat /proc/(PID) : To see how a process was started and the executable location
+27)	ps aux : Shows PIDs and other things from process list…If lost, use it?
+28)	runlevel : Shows the current run level
+29)	chkconfig –list | grep (name of service/process) : To see what run levels the service or process runs at
+30)	lsof : List all open files. Can use with grep and PID to see what files should it have opened
+a)	lsof -p PID : Use this to look at all the open files of a particular PID
+Networking Info:
+31)	lsof –i -Pn: List all open files that have a network connection and the ports it’s listening on
+32)	sudo netstat –pant : Look for TCP socket info (network connections) and the associated PID with the activities
+33)	route : Show where packets are being routed to
+i)	ip route : New route command, shows same things
+34)	ifconfig –a : Show system interface config
+35)	arp –n : Show ARP cache
+36)	 cat /etc/resolv.conf : Shows the DNS server IP pairs
+37)	 cat /etc/hosts : Maps IP addresses to local hosts only (used when DNS isn’t working)
+38)	 iptables -L –n -v: Lists all firewall rules
+
+Security & Logging
+39)	sudo cat /etc/rsyslog.conf : To view the current logging rules and where things are logged at
+40)	lastb : Shows listing of last logged in users as long as the attempt was made via GUI
+41)	/var/log/secure, /var/log/messages : Both are good places to look for logs of events
+42)	tail -n (number ) -f (log file to look at) : This lets you look at the last 10 lines of a file by default
+a)	You may use the -n option followed by a number to display that many lines instead of the default
+b)	The -f option lets you actively watch the file as it grows
+43)	cat /etc/crontab : Lets you see all the current crontab jobs
+a)	crontab -l : Lets you see only the local users crontab jobs
+44)	sudo ausearch : A tool to help query audit daemon logs
+a)	sudo ausearch -w -i | grep -i (service) : This lets you check the running process logs for the given service
+b)	sudo ausearch -m (message) -sv (success value): These options let you query for a specific message within the logs and a given success value of either yes (succeeded) or no (failed)
+i)	sudo ausearch -m USER_LOGIN -sv no : This example lets you look for only the failed login attempts in the auditd log file
+ii)	Other activities include things like: ADD_USER, DEL_USER, USER_AUTH, LOGIN, ADD_GROUP, and ROLE_ASSIGN
+c)	sudo ausearch -ua (user name) : This lets you look at all the activity from the given user
+i)	sudo ausearch -ua (user name) -ts (time) -te (another time after the first given one) -i : This lets you query all the activity of a user between the -ts time and the -te time (-i interprets the output into a human readable format).
+(1)	sudo ausearch -ua student -ts yesterday -te now -i
+d)	sudo ausearch -i | grep -i (keyword) : This is a great command to see any changes made to the firewall
+i)	The keyword would be something you are looking for from the command like ACCEPT or REJECT that can narrow down the grep results
+45)	service iptables status : (CentOS 6 only) Lets you view the firewall status
+46)	service firewalld status : (Cent)S 7 only) Lets you view the status of firewalld
+47)	sudo iptables -L :  View all the configured chains in the firewall 
+a)	The -F option will flush the iptables
+b)	iptables -(A add, D delete, P set default) (chain to apply rule to) -o (interface) -p (protocol) --sport (source port) --dport (destination port or range of ports) -s (source network) -d (destination network) -j (target of rule) : This is the format of how to make the firewall rules
+i)	iptables -A OUTPUT -o eth0 -p tcp --sport 23 --dport 1024:35535 -s 192.168.4.0/24 -d 0.0.0.0/0 -j ACCEPT
