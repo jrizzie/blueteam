@@ -1,0 +1,17 @@
+#!/bin/bash
+# security & logging
+# /etc/rsyslog.conf -- holds info about your logs
+# /var/log/secure - typical place for logs to be stored
+# /var/log/btmp - standard place for logs if set in /etc/rsyslog.conf
+# logger this is a fake log event -- some  more text (like system rebooted for disk upgrade)--
+#   ^^   view log with:  sudo tail -f /var/log/messages
+sudo service rsyslog restart
+
+for i in {debug,info,notice,warning,err,crit,alert,emerg}
+do
+logger p kern.$i "Test kern message, level $i"
+logger p mail.$i "Test mail message, level $i"
+logger p cron.$i "Test cron message, level $i"
+done
+
+

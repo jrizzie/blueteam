@@ -1,0 +1,83 @@
+################################ 2110: linux startup
+# lab 1 = using/knowing vi/vim
+# lab 2 = Linux startup
+- etc/inittab (default run level)
+runlevel
+chkconfig --list 
+# ^ identify services enabled when booting
+chkconfig --list | grep 5:on
+systemctl get-default
+# ^ id the defualt target
+less /usr/lib/systemd/system/graphical.target
+################################# 2120 system config
+echo '$PATH' - echos literally ($PATH)
+echo "$PATH" - echos the $PATH interpreted --variable info
+alias ls='ls -l' (changes alias aka command)
+#      - to permanently change alias, enter alias in ~.bashrc
+which (similar to whereis)
+whereis (locate file)
+locate (don't forget to run updatedb)
+ls /dev/sd[abc][1-4]
+wc -l file.txt
+cut -d: -f1-5
+grep "/bin/bash" /etc/passwd | cut -d: f1,6
+$USER $HOME $PWD $SHELL
+set = lists ALL variables
+env = lists environment variables
+ls $HOME/.[a-z]*
+PS1="this will change the command prompt!"
+!n = where (n = number) will replay historical commands starting by 1st cmd ever ran.
+cat /etc/passwd | grep 'bash'
+cat /etc/group | grep "^daemon*" only pull the line that starts with daemon -- (man grep)
+cat /etc/group | grep "$*daemon*" only pull the line that ends with daemon -- (man grep)
+md5sum filetobehashed (will hash a file and produce md5 output)
+
+#*** ^^^ important ^^^ ***#
+#========================================================================================
+#Linux Remote Host Collection
+#========================================================================================
+#       - collect system info
+hostname
+uname -r
+uname -a
+date
+#       - collect installed software
+rpm -qa
+lsmod
+#       - collect disk information
+ls /dev/sd*
+lsblk -f
+df
+fdisk -l
+#       - collect process and service info
+ps -elf
+ps aux
+#       - collect listening ports
+sudo lsof -i -P -n | grep LISTEN
+#       - list open files from previous step
+lsof -p <PID>
+#       - collect network information
+arp -n
+sudo lsof -i -nP
+netstat -ano
+netstat -pant
+ss -pant
+ifconfig -a
+#       - collect user information
+whoami
+who
+w
+sudo last
+cat /etc/passwd
+cat /etc/shadow
+#       - collectstartup info
+runlevel
+crontab -l
+#       - tx/rx on linux
+#       - sending over SCP
+scp /path/to/mydoc.txt username@1.2.3.4:/path/to/destination
+#       - receiving/pulling over SCP
+scp username@1.2.3.4:/path/to/something.I.want path/to/my/home/destination
+
+
+
