@@ -32,56 +32,67 @@ cat /etc/group | grep "^daemon*" only pull the line that starts with daemon -- (
 cat /etc/group | grep "$*daemon*" only pull the line that ends with daemon -- (man grep)
 md5sum filetobehashed (will hash a file and produce md5 output)
 
-#*** ^^^ important ^^^ ***#
+
 #========================================================================================
 #Linux Remote Host Collection
 #========================================================================================
-#       - collect system info
+            - collect system info
 hostname
 uname -r
 uname -a
 date
-#       - collect installed software
+            - collect installed software
 rpm -qa
 lsmod
-#       - collect disk information
+            - collect disk information
 ls /dev/sd*
 lsblk -f
 df
 fdisk -l
-#       - collect process and service info
+            - collect process and service info
 ps -elf
 ps aux
-#       - collect listening ports
+ls /proc
+            - collect listening ports
 sudo lsof -i -Pn | grep LISTEN
 sudo netstat -pant
-# Get process listing (specify SSH connection)
+            - Get process listing (specify SSH connection)
 ps aux | grep -i ssh
-# List open files for the PID associated with SSH
+            - List open files for the PID associated with SSH
 lsof -p <PID_from_SSH>
-# list of listening services
+            - list of listening services
 netstat -ptunl
-#       - collect network information
+
+###       - collect network information
 arp -n
 sudo lsof -i -nP
 netstat -ano
 netstat -pant
 ss -pant
+ip route
 ifconfig -a
-#       - collect user information
+# REMOTE SHARES
+cat /etc/mtab
+cat /etc/fstab
+
+###       - collect user information
 w
 who
 whoami
 sudo last
 cat /etc/passwd
 cat /etc/shadow
-#       - collectstartup info
+###       - collectstartup info
+cat /etc/inittab
+cat /etc/init.d
 runlevel
 crontab -l
-#       - tx/rx on linux
-#       - sending over SCP
+###       - collect logged-in users accts
+cat /root/.bash_history
+cat /home/*/.bash_history
+###       - sending over SCP
 scp /path/to/mydoc.txt username@1.2.3.4:/path/to/destination
-#       - receiving/pulling over SCP
+###       - receiving/pulling over SCP
 scp username@1.2.3.4:/path/to/something.I.want path/to/my/home/destination
 
 
