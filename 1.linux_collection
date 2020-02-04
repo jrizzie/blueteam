@@ -85,6 +85,7 @@ who
 whoami
 sudo last
 cat /etc/passwd
+cat /etc/sudoers
 cat /etc/shadow
 #
 #- collect startup info ---
