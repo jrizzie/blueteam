@@ -53,9 +53,14 @@ fdisk -l
 ps -elf
 ps aux
 #       - collect listening ports
-sudo lsof -i -P -n | grep LISTEN
-#       - list open files from previous step
-lsof -p <PID>
+sudo lsof -i -Pn | grep LISTEN
+sudo netstat -pant
+# Get process listing (specify SSH connection)
+ps aux | grep -i ssh
+# List open files for the PID associated with SSH
+lsof -p <PID_from_SSH>
+# list of listening services
+netstat -ptunl
 #       - collect network information
 arp -n
 sudo lsof -i -nP
@@ -64,9 +69,9 @@ netstat -pant
 ss -pant
 ifconfig -a
 #       - collect user information
-whoami
-who
 w
+who
+whoami
 sudo last
 cat /etc/passwd
 cat /etc/shadow
