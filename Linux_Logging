@@ -1,46 +1,87 @@
 #========================================================================================
+# GENERAL INFO
+#========================================================================================
+/etc/rsyslog.conf: Linux log message configuration file
+Selector	Action
+Logging Facility and Logging Priority, separated by a “.”	Specifies the action to be taken. Could be pathname, hostname, csv of users, or asterisk.
+
+System Logs	Contains
+/var/log/auth.log	System auth messages such as user logins and auth type
+/var/log/boot.log	System boot up information
+/var/log/cron.log	Start/Stop information regarding cron jobs
+/var/log/daemon.log	Information logged by daemons
+/var/log/dmesg	Kernel ring buffer information and early boot info
+/var/log/kern.log	Information logged by the kernel
+/var/log/maillog	Information from mail server
+/var/log/messages	Global system messages
+/var/log/secure	Info related to authentication and authorization privileges
+
+Application Logs	Contains
+/var/log/httpd	Web server logs
+/var/log/apache	Apache specific web server logs
+/var/log/samba	Samba specific logs
+
+Security Logs	Contains
+/var/run/utmp	Log of all currently logged on users.  View with w cmd.
+/var/log/wtmp	Records all logins and logouts.  View with last cmd.
+/var/log/lastlog	Last login recorded on system from users.  View with lastlog.
+/var/log/btmp	Show failed log attempts
+
+#========================================================================================
 # Linux logs & auditing
 #========================================================================================
-# Did <cups> service start on boot? -What is it's status? btw... cups = printer service
+# Did <cups> service start on boot? -What is it's status? btw... cups = printer service --
 systemctl status cups
 systemctl | grep -i 'cups'
-# stop/restart <cups>
+#
+# stop/restart <cups> --
 sudo service <cups> stop
 sudo service <cups> start
-# where in log files does <cups> contain error logs?
+#
+# where in log files does <cups> contain error logs? --
 sudo lsof | grep - cups
 # (/var/log/boot.log)
-# find cups PID by running
+#
+# find cups PID by running --
 ps -elf | grep -i cups
-# what files are associated with the <cups> service, based on PID?
+#
+# what files are associated with the <cups> service, based on PID? --
 sudo lsof -p <PID>
-# the utility ausearch queries the /var/log/audit/audit.log file.  Check running process logs in auditd log file
+#
+# the utility ausearch queries the /var/log/audit/audit.log file.  Check running process logs in auditd log file --
 sudo ausearch -w -i|grep -i cups
-# check for FAILED LOGIN attempts in thhe auditd log file
+#
+# check for FAILED LOGIN attempts in thhe auditd log file --
 sudo ausearch -m USER_LOGIN -sv no
-# Find user activity in auditd log file
+#
+# Find user activity in auditd log file --
 sudo ausearch -ua student
 sudo ausearch -ua student -ts yesterday -te now -i
 sudo ausearch -ua student -ts today -te now -i
 sudo ausearch -ua student -ts recent
-# find user account mods and user login activity:
+#
+# find user account mods and user login activity: --
 sudo ausearch -m ADD_USER,DEL_USER,ADD_GROUP,ROLE_ASSIGN
 sudo ausearch -m USER_AUTH
 sudo ausearch -m LOGIN
+#
 #========================================================================================
 # Threat Hunting in Linux Logs
 #========================================================================================
-# Find SuperUID program and/or SuperGID programs/executables (hunting for persistence)
+#
+# Find SuperUID program and/or SuperGID programs/executables (hunting for persistence) --
 find / -user root -perm -4000 -print0 | xargs -0 ls -l
 find / -user root -perm -4000 -print0 | xargs -0 ls -l
 find / -user root -perm -4000 -print
-# Look for logs/audit files that have been deleted or disabled
+#
+# Look for logs/audit files that have been deleted or disabled --
 # Look for evidence of persistence via executables in user home directories and other locations common to users.
-# IS THERE A RECORD OF ELEVATED NETSTAT COMMAND EXECUTION?
+#
+# IS THERE A RECORD OF ELEVATED NETSTAT COMMAND EXECUTION? --
 sudo ausearch-i -ts recent
-# then use/search on pid & user???
-grep "user hoover" /var/log/auth.log
-# using grep; find logs for a specific por number associated with "hoover on port 4792" -example
+grep "user hoover" /var/log/auth.log 
+#
+# using grep; find logs for a specific por number associated with "hoover on port 4792" -example --
 grep "4792" /var/log/auth.log
 # ^ displays "GET /scripts/samples/search?=4972HTTP/1.0""
 grep "authentication failure" /var/log/auth.log
@@ -49,9 +90,10 @@ tail -f /var/log/auth.log | grep 'Invalid user'
 #========================================================================================
 # Firewalls
 #========================================================================================
-# Remove all rules in a table
+# Remove all rules in a table --
 iptables -F
-# Query existing rules & other FW settings
+#
+# Query existing rules & other FW settings --
 iptables -L
 iptables-save
 iptables-restore
@@ -59,7 +101,9 @@ service iptables status (centos6)
 service firewalld status (centos7)
 systemctl -l | grep -i fire
 service ufw status
-# change a fw rule
+#
+# change a fw rule --
 iptables -A INPUT icmp --icmp-type echo-request -j REJECT
-# verify the change using ausearch
+#
+# verify the change using ausearch --
 ausearch -i -m USER_CMD | grep -i 'iptables'
