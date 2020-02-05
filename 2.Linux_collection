@@ -87,6 +87,9 @@ sudo last
 cat /etc/passwd
 cat /etc/sudoers
 cat /etc/shadow
+last
+lastlog
+# *lastlog*
 #
 #- collect startup info ---
 cat /etc/inittab
