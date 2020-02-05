@@ -1,0 +1,78 @@
+#verb | noun
+#
+Get-something
+Set-Something
+New-Something
+Remove-something
+#
+some linux cmds work:
+ls
+dir
+cd
+#
+#====================  help ===============================================
+#
+Get-Help
+Get-Help Get-EventLog -Detailed
+Get-Help Get-EventLog -Full
+Get-Help Get-EventLog -Examples
+help <wildcard expression>
+help -Category Cmdlet -Name *service*	(all service-based commands *verb*-Service)
+#
+Get-Help host		(list host info)
+Get-Help process	(list process info)
+Get-Help service	(list service info)
+get-command -verb get			(all commands that start with get)
+get-command -verb add			(all commands that start with add)
+get-pr[TAB]		(tab 'til get-process)
+get-se[TAB]		(tab 'til get-service)
+get-h[TAB]		(tab 'til get-hotfix)
+hostname
+systeminfo
+#
+#====================  other basic commands ===============================================
+#
+Get-location 		(get the current directory)
+Set-Location 		(change the current directory / cd)
+New-Item		(create a new empty file or dir)
+Copy-Item 		(copy files)
+Remove-Item 		(remove a file or directory)
+Move-Item		(move a file)
+Rename-Item		(rename a file)
+get-alias 		(get-alias dir... lists alias')
+help dir | more		(| more = better view)
+#
+#====================  run remote commands ===============================================
+#
+# invoke-command on a remote PC should prompt you for a password.  invoke-command uses TCP, port 5986, RCP
+invoke-command -computername <ip_addr> {cmd-to-run} -credential <domain>\<username>
+#
+#====================  Objects & properties/methods ======================================
+#
+get-process -name notepad | stop-process
+get-command | get-member
+#
+#====================  Searching ===========================================================
+#
+get-alias dir						(get alias for dir {get-childitem})
+# search recursively------------------------------------------------------------------------
+get-help get-childItem					(basic get-help)
+get-help get-childItem -full 				(gets examples and options like -recurse)
+get-childitem -recurse					(will search the current directory for all files and folders and sub files folders)
+get-childitem -filter *.txt -Recurse | measure-object	(search for all files & folders from current directory, filter for '.txt' files, and count the results
+(get-childitem -filter *.txt -Recurse).count		(search for all files & folders from current directory, filter for '.txt' files, and count the results
+
+
+start-transcript		(will record stuff & save to a file)
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+#====================  
+
+
