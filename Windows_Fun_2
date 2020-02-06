@@ -1,4 +1,7 @@
-#-------------------------------------------- Get remote information --
+#-------------------------------------------- Get process information --
+#-------------------------------------------- Get process information remotely --
+wmic startup list full
+wmich startup list brief
 wmic /node:10.0.0.X process list brief
 wmic /node:10.0.0.X process where "name like '%svc%'" get name, processid, parentprocessid, commandline
 #
@@ -6,19 +9,14 @@ wmic /node:10.0.0.X process where "name like '%svc%'" get name, processid, paren
 #-------------------------------------------- Start notepad remotely
 wmic process call create notepad.exe
 wmic /node:10.0.0.X process call create notepad.exe
-#-------------------------------------------- Get startup programs (from boot) --
 #
-wmic startup list full
-wmich startup list brief
-#
-#-------------------------------------------- Get process names, full, or specific
+#-------------------------------------------- Get process names, full, or specific --
 wmic process list full 
 wmic process get name, processid, parentprocessid, commandline
 #
 #-------------------------------------------- Get processes where ID is less than 200 --
+#-------------------------------------------- Get process names of "svc" with full detail --
 #
 get-process | where-object {$_.ID -lt 200}
-#
-#-------------------------------------------- Get process names of "svc" with full detail --
 get-process | where "name like '%svc%'" get list full
 #
