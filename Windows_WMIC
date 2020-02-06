@@ -1,3 +1,4 @@
+#------------------------------------------BASIC WMIC (cmd.exe)------------------------------------------------------------
 # wmic [where|object] list
 # wmic [where|object] get
 # wmic [where|object] create
@@ -28,3 +29,18 @@ wmic process get name, processid, parentprocessid, commandline, executablepath
 get-process | where-object {$_.ID -lt 200}
 get-process | where "name like '%svc%'" get list full
 #
+#-----------------------------------------------  WMIC OVER POWERSHELL  ------------------------------------------------------------
+get-wmiobject --> get-ciminstance
+invoke-wmimethod --> invoke-cmmethod
+#
+# list available namespaces:
+get-wmiobject -nmaespace root -class _namespace | select -property name
+#
+#--------------------------------------------- searh for wmi classes
+get-wmiobject -list | where name -like *search*
+get-cimclass | where cimclassname -like *search*
+#
+#--------------------------------------------- get disk and system information
+get-wmiobject -class win32_logicaldisk
+get-ciminstance -classname win32_computersystem
+
