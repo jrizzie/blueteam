@@ -1,7 +1,10 @@
 #------------------------------------------ important commands ------------------------------------------------------------
-ps> icm -cn<ip> -cr<user> {<command>}
-wmic> wmic /node:<ip> /user:<user> /password:<password> <command>
-winrs> winrs -r: <ip> -u:<user> -p:<password> <command>
+#ps 
+icm -cn<ip> -cr<user> {<command>}
+#wmic 
+wmic /node:<ip> /user:<domain\user> /password:<password> <command>
+#winrs 
+winrs -r: <ip> -u:<user> -p:<password> <command>
 #------------------------------------------BASIC WMIC (cmd.exe)------------------------------------------------------------
 # wmic [where|object] list
 # wmic [where|object] get
