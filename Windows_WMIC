@@ -1,7 +1,15 @@
+# wmic [where|object] list
+# wmic [where|object] get
+# wmic [where|object] create
+# wmic [where|object] delete
+# wmic [where|object] where
+# wmic [where|object] /every:[N]
+# For help with any of these -------------
+# wmic [where|object] <any of the above>/?
 #-------------------------------------------- Get process information --
 #-------------------------------------------- Get process information remotely --
 wmic startup list full
-wmich startup list brief
+wmic startup list brief
 wmic /node:10.0.0.X process list brief
 wmic /node:10.0.0.X process where "name like '%svc%'" get name, processid, parentprocessid, commandline
 #
