@@ -1,20 +1,15 @@
 #verb | noun
-#
 Get-something
 Set-Something
 New-Something
 Remove-something
-#
-some linux cmds work:
-ls
-dir
-cd
 #
 #====================  help ===============================================
 #
 Get-Help
 Get-Help Get-EventLog -Detailed
 Get-Help Get-EventLog -Full
+Get-Help Get-EventLog ShowWindow
 Get-Help Get-EventLog -Examples
 help <wildcard expression>
 help -Category Cmdlet -Name *service*	(all service-based commands *verb*-Service)
