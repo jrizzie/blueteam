@@ -1,3 +1,8 @@
+#------------------------------------------ important commands ------------------------------------------------------------
+ps> icm -cn<ip> -cr<user> {<command>}
+wmic> wmic /node:<ip> /user:<user> /password:<password> <command>
+winrs> winrs -r: <ip> -u:<user> -p:<password> <command>
+#==========================================================================
 #verb | noun
 Get-something
 Set-Something
