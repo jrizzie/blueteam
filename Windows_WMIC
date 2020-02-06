@@ -11,7 +11,7 @@
 wmic startup list full
 wmic startup list brief
 wmic /node:10.0.0.X process list brief
-wmic /node:10.0.0.X process where "name like '%svc%'" get name, processid, parentprocessid, commandline
+wmic /node:10.0.0.X process where "name like '%svc%'" get name, processid, parentprocessid, commandline, executablepath
 #
 #-------------------------------------------- Start notepad 
 #-------------------------------------------- Start notepad remotely
@@ -20,7 +20,7 @@ wmic /node:10.0.0.X process call create notepad.exe
 #
 #-------------------------------------------- Get process names, full, or specific --
 wmic process list full 
-wmic process get name, processid, parentprocessid, commandline
+wmic process get name, processid, parentprocessid, commandline, executablepath
 #
 #-------------------------------------------- Get processes where ID is less than 200 --
 #-------------------------------------------- Get process names of "svc" with full detail --
