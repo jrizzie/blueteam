@@ -1,0 +1,19 @@
+#========  Remoting  ========#
+#---Powershell
+icm -cn <ip_addr> -cr <username> {command}
+#---wmic
+wmic /node:<ip_addr> /user:<domain\username> /password:<password> <command>
+#---WINRS
+winrs -r:<ip_addr> -u:<username> -p:<password> <command>
+#
+#========  PROCESSES & SYSTEM INFO  ========#
+wmic process where name="<process_name>" list/get name, processid, parentprocessid, commandline
+wmic process where "name like '<process_name>'" list/get " " " "
+wmic process <PID> list/get name, processid, parentprocessid, commandline
+wmic startup list full/brief
+
+hostname -> *systeminfo (get-host) | Powershell = get-host
+wmic QFE -> *systeminfo (hotfix) | Powershell = get-hotfix
+netstat -ano | Powershell = get-nettcpconnection
+find | Powershell select-string; select
+
