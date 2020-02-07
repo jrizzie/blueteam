@@ -1,4 +1,22 @@
-wmic /node:<ip_addr> /user:<domain_if_diff>\<username> /password:<passwd> useraccount list
+#===================================================================================
+# network connections
+#===================================================================================
+netstat -ano | findstr /I "listening"
+netstat -ano | findstr /I "esablished"
+#-- Get remotely
+icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
+#
+#===================================================================================
+# system info
+#===================================================================================
+#
 systeminfo
-netstat -ano | find /i "LISTENING"
-netstat -ano | select-string "ESTABLISHED"
+#-- Get remotely
+icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
+wmic /node:<ip_addr> /user:<domain_if_diff>\<username> /password:<passwd> useraccount list
+#===================================================================================
+# -- Get local systeminfo / remote systeminfo
+#
+
+#===================================================================================
