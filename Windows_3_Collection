@@ -1,5 +1,7 @@
 # IP to Hostname 
 nslookup <ip>
+# find stuff
+find "stuff" C:\*
 #====================# network info #====================#
 #----------------------------------------- localhost
 netstat -ano | findstr /I "listening"
