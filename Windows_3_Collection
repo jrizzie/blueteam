@@ -5,11 +5,13 @@ nslookup <ip>
 netstat -ano | findstr /I "listening"
 netstat -ano | findstr /I "esablished"
 tracert google.com
+net view
 net share
 #----------------------------------------- remote
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {tracert google.com}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net view}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {net share}
 #
 #====================# system info #====================#
