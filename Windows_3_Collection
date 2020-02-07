@@ -1,1 +1,4 @@
-
+wmic /node:<ip_addr> /user:<domain_if_diff>\<username> /password:<passwd> useraccount list
+systeminfo
+netstat -ano | find /i "LISTENING"
+netstat -ano | select-string "ESTABLISHED"
