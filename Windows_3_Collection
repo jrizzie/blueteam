@@ -1,19 +1,26 @@
+nslookup <ip>
 #===================================================================================
 # network info
 #===================================================================================
 #-- localhost
 netstat -ano | findstr /I "listening"
 netstat -ano | findstr /I "esablished"
+tracert google.com
 #-- remote
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {tracert google.com}
 #
 #===================================================================================
 # system info
 #===================================================================================
-#-- localhost
-Get-LocalUser | Select *
+#-------------------------- localhost
+wmic useraccount list brief
 systeminfo
-#-- remote
-wmic /node:<ip_addr> /user:<domain_if_diff>\<username> /password:<passwd> useraccount list
+net user
+get-localuser
+#-------------------------- remote
+wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
 icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
