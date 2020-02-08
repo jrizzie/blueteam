@@ -1,7 +1,8 @@
 #==================  Net Shares  ==================#
 #-
 # create a share "desktop" that shares your public desktop folder to UNLIMITED # of people
-net share desktop=c:\users\public\desktop /UNLIMITED
+net share VMDESKTOP=C:\Users\Administrator\Desktop
+net share VMDESKTOP=C:\Users\Public\Desktop /UNLIMITED
 #-
 #----- Connect to the Share from another box:
 net use *
