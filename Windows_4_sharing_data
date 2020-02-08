@@ -1,0 +1,24 @@
+#==================  Windows 10 SCP  ==================#
+#---- SCP:  
+#---- On the Windows 10 Machine being accessed; enable OpenSSH:
+#--> Windows --> Apps & Features --> Optional features --> Add a feature
+#--> Select/Download/Install OpenSSH (server)
+#---- On the Windows 10 Machine being accessed; start/run the SSH service:
+#--> Windows --> Services --> OpenSSH SSH server (start)
+#--> Windows --> Services --> OpenSSH Authentication Agent (Set to Manual; then start)
+#-------------------------------------------------------------------------------------
+# SCP examples:
+# scp source destination
+# scp <path/to/file.ext> <remote_user>@<remote_IP_addr>:/path/to/destination
+# scp C:/Local/file somebody@123.123.123.123:C:/
+# scp <remote_user>@<remote_IP.addr>:C:/remote/file C:/Local/Path
+# scp user@<IP>:C:/file C:/My/Path/
+#--------------------------
+#==================  SFTP (if SSH is running)  ==================#
+# From the [WORKING DIRECTORY] you want to send/receive:
+sftp RemoteUser@<Remote_IP_addr>
+# push a file:
+put <file>
+# pull a file:
+get <file>
+# ---- Or "cd" to directory of file you want to pull, then "get file"
