@@ -8,6 +8,9 @@ wmic /node:<ip_addr> /user:<domain\username> /password:<password> <command>
 winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> <command>
 winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> certutil -hashfile C:\remote\path\file
 #
+# *NOTE* - To run winrs commands; from the source machine, type:
+winrm set winrm/config/client '@{TrustedHosts="<DESTINATION_ip_Address,username")'
+#
 #=================  PROCESSES & SYSTEM INFO  =================#
 #
 wmic process where name="<process_name>" list/get name, processid, parentprocessid, commandline
