@@ -1,12 +1,13 @@
 #==================  Net Shares  ==================#
 #-
-#----- On a connected/bridged VM, create a share named "desktop" to share send/receive to/from the VM's desktop
+#----- On a connected/bridged VM, create share "desktop" to send/receive to/from the VM's desktop
 # VM:
 net share VMDESKTOP=C:\Users\IEUser\Desktop /GRANT:Administrators,Full
 #-
 #----- Connect to the Share from the local machine:
-net use x: \\<VM_Hostname>\VMDESKTOP
-#-
+net use z: \\<VM_Hostname>\VMDESKTOP
+#----- Mount the C$ share of the VM
+net use x: \\<VM_Hostname>\C$
 #----- Confirm shares:
 net use
 net view
