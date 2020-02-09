@@ -5,7 +5,8 @@ icm -cn <ip_addr> -cr <username> {command}
 #---wmic:
 wmic /node:<ip_addr> /user:<domain\username> /password:<password> <command>
 #---WINRS:
-winrs -r:<ip_addr> -u:<username> -p:<password> <command>
+winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> <command>
+winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> certutil -hashfile C:\remote\path\file
 #
 #=================  PROCESSES & SYSTEM INFO  =================#
 #
