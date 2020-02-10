@@ -34,4 +34,4 @@ wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
 icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
-icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status
+icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status -eq "running"}
