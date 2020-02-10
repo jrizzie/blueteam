@@ -3,8 +3,9 @@ nslookup <ip>
 # find stuff
 find "stuff" C:\*
 tasklist | findstr /I .*llhost*
+# -- search for "service" by PID, or by string ----
 tasklist /SVC /FI "pid eq <PID_ID>"
-tasklist /SVC /FI "services eq .*windefend*"
+tasklist /SVC | findstr /I .*windefend*
 #====================# network info #====================#
 #----------------------------------------- localhost
 netstat -ano | findstr /I "listening"
