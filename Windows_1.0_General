@@ -1,17 +1,16 @@
 #=================  Remoting  =================#
-#
-#---Powershell:
+#---------------------------------------------------------------------------Powershell:
 icm -cn <ip_addr> -cr <username> {command}
-#---wmic:
+#---------------------------------------------------------------------------WMIC:
 wmic /node:<ip_addr> /user:<domain\username> /password:<password> <command>
-#---WINRS:
+#---------------------------------------------------------------------------WINRS:
 winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> <command>
 winrs -r:<ip_addr> -u:<domain>\<username> -p:<passwd> certutil -hashfile C:\remote\path\file
 #
 # *NOTE* - To run winrs commands; from the source machine, type:
 winrm set winrm/config/client '@{TrustedHosts="<DESTINATION_ip_Address,username")'
 #
-#=================  PROCESSES & SYSTEM INFO  =================#
+#=================  Important Commands  =================#
 #
 wmic process where name="<process_name>" list/get name, processid, parentprocessid, commandline
 wmic process where "name like '<process_name>'" list/get " " " "
@@ -20,6 +19,6 @@ wmic startup list full/brief
 #
 hostname -> *systeminfo (get-host) | Powershell = get-host
 wmic QFE -> *systeminfo (hotfix) | Powershell = get-hotfix
-netstat -ano | Powershell = get-nettcpconnection
-find | Powershell select-string; select
+netstat -ano (Powershell: get-nettcpconnection)
+find (Powershell: select-string; select)
 
