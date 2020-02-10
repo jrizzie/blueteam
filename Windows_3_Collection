@@ -2,6 +2,7 @@
 nslookup <ip>
 # find stuff
 find "stuff" C:\*
+tasklist | findstr /I .*llhost*
 #====================# network info #====================#
 #----------------------------------------- localhost
 netstat -ano | findstr /I "listening"
