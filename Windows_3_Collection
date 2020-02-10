@@ -20,16 +20,18 @@ icm -cn <ip_addr> -cr <domain.if.diff\user> {net share}
 #
 #====================# system info #====================#
 #----------------------------------------- localhost
+wmic startup list <full,bief,detailed>
 tasklist
-sc query
 wmic useraccount list brief
 systeminfo
 net user
 get-localuser
+get-service |Where-Object status -eq "Running"
 #----------------------------------------- remote
+icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {tasklist}
-icm -cn <ip_addr> -cr <domain.if.diff\user> {sc query}
 wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
 icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
+icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status
