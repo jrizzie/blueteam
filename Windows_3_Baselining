@@ -2,11 +2,21 @@
 #                                         General Info
 #=================================================================================================
 nslookup <ip>
+#
 #______________________________________ Find "stuff:"
-# cmd_line----:  find "stuff" C:\*
+# cmd_line----:  find [/c=count] "stuff" C:\*
 # PowerShell--:  dir "stuff" -path C:\ -Recurse
 # PowerShell--:  get-something | findstr /I .*stuff*
 # PowerShell--:  get-something | Select-String stuff
+#
+#______________________________________ Hash Files:
+#_First copy with robocopy:  robocopy <file_loc> \\<destination> <source_filename>
+robocopy C:\ \\<Destination_IP>\C$\<path\file>
+#-PS----------> get-filehash -Algorithm [SHA1] 'C:\file.txt'
+#-CLI---------> cert-util -hashfile C:\<file>
+#-Remote CLI--> cert-util -hashfile \\<Remote_IP>\C$\<path\file>  
+#-Remote PS---> icm -cn <Remote_IP> -cr <dmn\user> {cert-util -hashfile 'C:\<path\file>' [SHA1]}
+#
 #______________________________________ General System info:
 systeminfo
 reg query
@@ -16,51 +26,60 @@ net user
 net group
 get-localuser
 get-service |Where-Object status -eq "Running"
+#
 #______________________________________ Processes and Services:
 tasklist
 tasklist /svc | findstr /I [.*llhost*] [.*windefend*]
 tasklist /svc /FI "pid eq [PID#] [PID_Name]"
 sc query
-# Inside sysinternal folder:  
+# PS TOOLS (From sysinternals folder)--------->>>
 psexec
-#______________________________________ Remote Commands:
-#_WINRS:                  winrs -r:<ip_addr> -u:<domain>\<user> -p:<passwd> <command>
-#_PowerShell:             icm -cn <ip_addr> -cr <username> {command}
-#_WMIC:                   wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
-#_[sysinternals-PSexec>]: psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
-#=================================================================================================
-#                                         System Info
-#=================================================================================================
-winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> systeminfo
-icm -cn <Remote_IP> -cr <domain\user> {systeminfo}
+pslist
 #
-winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> net user
-icm -cn <Remote_IP> -cr:<dmn\user> {Get-LocalUser}
-winrs -r:<Remote_IP> -u:justin -p:<passwd> wmic useraccount list brief
-#
-winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> tasklist [/svc]
-icm -cn <Remote_IP> -cr:<dmn\user> {[Get-process] [Get-service]}
-winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process list brief
-winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process where "name like '%svc%'" get name, processid, commandline, parentprocessid
-tasklist
-
-icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
-icm -cn <ip_addr> -cr <domain.if.diff\user> {tasklist}
-wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
-icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
-icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
-icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status -eq "running"}
-
-
-
-#====================# network info #====================#
-#----------------------------------------- localhost
+#______________________________________ Network things:
 netstat -ano | findstr /I "listening"
 netstat -ano | findstr /I "esablished"
 tracert google.com
 net view
 net use
 net share
+#
+#______________________________________ Remote Commands:
+#_WINRS:                  winrs -r:<ip_addr> -u:<domain>\<user> -p:<passwd> <command>
+#_PowerShell:             icm -cn <ip_addr> -cr <username> {command}
+#_WMIC:                   wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
+#_[sysinternals-PSexec>]: psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
+#
+#=================================================================================================
+#                                   Baseline & Characterization
+#=================================================================================================
+#___________________________________________________________System Info:
+winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> systeminfo
+icm -cn <Remote_IP> -cr <domain\user> {systeminfo}
+#____________________________________________________________Users:
+winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> net user
+icm -cn <Remote_IP> -cr <dmn\user> {Get-LocalUser}
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic useraccount list brief
+#
+#____________________________________________________________Processes & Services:
+#
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> tasklist [/svc]
+icm -cn <Remote_IP> -cr <dmn\user> {[Get-process] [Get-service] [tasklist]}
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process list brief
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process where "name like '%svc%'" get name, processid, commandline, parentprocessid
+icm -cn 192.168.173.131 -cr <dmn\user> {Get-Service | Where-Object status -eq "running"}
+#<SysInternals_folder> pslist
+#
+#____________________________________________________________Query the HKLM "Run" key:
+winrs -r:192.168.173.131 -u:<dmn\user> -p:FrozeN15!% reg query HKLM\Software\microsoft\windows\currentversion\run
+icm -cn <Remote_IP> -cr:<dmn\user> {get-itemproperty HKLM:\Software\microsoft\windows\currentversion\run}
+#
+#____________________________________________________________Startup:
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic startup list [brief]
+icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
+#
+#____________________________________________________________Network Info:
+
 #----------------------------------------- remote
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
