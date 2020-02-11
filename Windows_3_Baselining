@@ -79,8 +79,6 @@ winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic startup list [brief]
 icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
 #
 #____________________________________________________________Network Info:
-
-#----------------------------------------- remote
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {tracert google.com}
