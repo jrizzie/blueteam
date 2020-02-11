@@ -18,11 +18,10 @@ get-localuser
 get-service |Where-Object status -eq "Running"
 #______________________________________ Processes and Services:
 tasklist
-tasklist | findstr /I .*llhost*
-tasklist /SVC /FI "pid eq <PID_ID>"
-tasklist /SVC | findstr /I .*windefend*
-# Inside sysinternal folder:  
+tasklist /svc | findstr /I [.*llhost*] [.*windefend*]
+tasklist /svc /FI "pid eq [PID#] [PID_Name]"
 sc query
+# Inside sysinternal folder:  
 psexec
 #______________________________________ Remote Commands:
 #_WINRS:                  winrs -r:<ip_addr> -u:<domain>\<user> -p:<passwd> <command>
@@ -32,10 +31,19 @@ psexec
 #=================================================================================================
 #                                         System Info
 #=================================================================================================
-winrs -r:<Remote_IP> -u:<domain\user> -p:<Passwd> systeminfo
+winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> systeminfo
 icm -cn <Remote_IP> -cr <domain\user> {systeminfo}
 #
-winrs -r:<Remote_IP> -u:<domain\user> -p:<Passwd> net user
+winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd> net user
+icm -cn <Remote_IP> -cr:<dmn\user> {Get-LocalUser}
+winrs -r:<Remote_IP> -u:justin -p:<passwd> wmic useraccount list brief
+#
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> tasklist [/svc]
+icm -cn <Remote_IP> -cr:<dmn\user> {[Get-process] [Get-service]}
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process list brief
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process where "name like '%svc%'" get name, processid, commandline, parentprocessid
+tasklist
+
 icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {tasklist}
 wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
