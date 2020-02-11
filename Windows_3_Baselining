@@ -1,33 +1,44 @@
-#=================================================================
-#                         General Info
-#=================================================================
-#_______________ IP to Hostname 
+#=================================================================================================
+#                                         General Info
+#=================================================================================================
 nslookup <ip>
-#_______________ find stuff
+#______________________________________ Find "stuff:"
 # cmd_line----:  find "stuff" C:\*
 # PowerShell--:  dir "stuff" -path C:\ -Recurse
-#
-tasklist | findstr /I .*llhost*
-# -- search for "service" by PID, or by string ----
-tasklist /SVC /FI "pid eq <PID_ID>"
-tasklist /SVC | findstr /I .*windefend*
-#=================================================================
-#                         System Info
-#=================================================================
-#----------------------------------------- localhost
+# PowerShell--:  get-something | findstr /I .*stuff*
+# PowerShell--:  get-something | Select-String stuff
+#______________________________________ General System info:
 systeminfo
+reg query
 wmic startup list <full,bief,detailed>
-tasklist
 wmic useraccount list brief
-systeminfo
 net user
+net group
 get-localuser
 get-service |Where-Object status -eq "Running"
-#----------------------------------------- remote
+#______________________________________ Processes and Services:
+tasklist
+tasklist | findstr /I .*llhost*
+tasklist /SVC /FI "pid eq <PID_ID>"
+tasklist /SVC | findstr /I .*windefend*
+# Inside sysinternal folder:  
+sc query
+psexec
+#______________________________________ Remote Commands:
+#_WINRS:                  winrs -r:<ip_addr> -u:<domain>\<user> -p:<passwd> <command>
+#_PowerShell:             icm -cn <ip_addr> -cr <username> {command}
+#_WMIC:                   wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
+#_[sysinternals-PSexec>]: psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
+#=================================================================================================
+#                                         System Info
+#=================================================================================================
+winrs -r:<Remote_IP> -u:<domain\user> -p:<Passwd> systeminfo
+icm -cn <Remote_IP> -cr <domain\user> {systeminfo}
+#
+winrs -r:<Remote_IP> -u:<domain\user> -p:<Passwd> net user
 icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {tasklist}
 wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
-icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
 icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
 icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status -eq "running"}
