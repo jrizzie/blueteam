@@ -1,0 +1,52 @@
+#=================================================================
+#                         General Info
+#=================================================================
+#_______________ IP to Hostname 
+nslookup <ip>
+#_______________ find stuff
+# cmd_line----:  find "stuff" C:\*
+# PowerShell--:  dir "stuff" -path C:\ -Recurse
+#
+tasklist | findstr /I .*llhost*
+# -- search for "service" by PID, or by string ----
+tasklist /SVC /FI "pid eq <PID_ID>"
+tasklist /SVC | findstr /I .*windefend*
+#=================================================================
+#                         System Info
+#=================================================================
+#----------------------------------------- localhost
+systeminfo
+wmic startup list <full,bief,detailed>
+tasklist
+wmic useraccount list brief
+systeminfo
+net user
+get-localuser
+get-service |Where-Object status -eq "Running"
+#----------------------------------------- remote
+icm -cn <ip_addr> -cr <domain\user> {get-wmiobject win32_startupcommand}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {tasklist}
+wmic /node:<ip> /user:<domain\user> /password:<passwd> useraccount list brief
+icm -cn <ip_addr> -cr <domain.if.diff\user> {systeminfo}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net user}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {get-localuser}
+icm -cn 192.168.173.131 -cr justin {Get-Service | Where-Object status -eq "running"}
+
+
+
+#====================# network info #====================#
+#----------------------------------------- localhost
+netstat -ano | findstr /I "listening"
+netstat -ano | findstr /I "esablished"
+tracert google.com
+net view
+net use
+net share
+#----------------------------------------- remote
+icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "LISTENING"}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {netstat -ano | findstr "ESTABLISHED"}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {tracert google.com}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net view}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net use}
+icm -cn <ip_addr> -cr <domain.if.diff\user> {net share}
+#
