@@ -71,7 +71,7 @@ icm -cn 192.168.173.131 -cr <dmn\user> {Get-Service | Where-Object status -eq "r
 #<SysInternals_folder> pslist
 #
 #____________________________________________________________Query the HKLM "Run" key:
-winrs -r:192.168.173.131 -u:<dmn\user> -p:FrozeN15!% reg query HKLM\Software\microsoft\windows\currentversion\run
+winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> reg query HKLM\Software\microsoft\windows\currentversion\run
 icm -cn <Remote_IP> -cr:<dmn\user> {get-itemproperty HKLM:\Software\microsoft\windows\currentversion\run}
 #
 #____________________________________________________________Startup:
