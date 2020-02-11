@@ -67,7 +67,7 @@ winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> tasklist [/svc]
 icm -cn <Remote_IP> -cr <dmn\user> {[Get-process] [Get-service] [tasklist]}
 winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process list brief
 winrs -r:<Remote_IP> -u:<dmn\user> -p:<passwd> wmic process where "name like '%svc%'" get name, processid, commandline, parentprocessid
-icm -cn 192.168.173.131 -cr <dmn\user> {Get-Service | Where-Object status -eq "running"}
+icm -cn <Remote_IP> -cr <dmn\user> {Get-Service | Where-Object status -eq "running"}
 #<SysInternals_folder> pslist
 #
 #____________________________________________________________Query the HKLM "Run" key:
