@@ -2,7 +2,8 @@
 #-
 #----- On a connected/bridged VM, create share "desktop" to send/receive to/from the VM's desktop
 # VM:
-net share VMDESKTOP=C:\Users\IEUser\Desktop /GRANT:Administrators,Full
+#     net share VMDESKTOP=C:\Users\IEUser\Desktop /GRANT:Administrators,Full
+-or-  net share VMDESKTOP=C:\Users\IEUser\Desktop /GRANT:Everyone,Full
 #-
 #----- Connect to the Share from the local machine:
 net use z: \\<VM_Hostname>\VMDESKTOP
