@@ -30,7 +30,14 @@ Security Logs	        Contains
 #========================================================================================
 # Linux logs & auditing
 #========================================================================================
-# Did <cups> service start on boot? -What is it's status? btw... cups = printer service --
+
+# for init scripts:
+ls /etc/init.d/
+
+# for runlevel symlinks:
+ls /etc/rc*.d/
+
+Did <cups> service start on boot? -What is it's status? btw... cups = printer service --
 systemctl status cups
 systemctl | grep -i 'cups'
 #
