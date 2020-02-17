@@ -16,6 +16,11 @@ net share
 net session
 #
 #---------------------------------------------------------------------------------------------
+#==================  SCP (WIN_7)  ==================#
+#-
+#-- On Windows 7; download bitvise SSH server
+#--> Be sure to allow a local account and password
+
 #==================  SCP (Win_10)  ==================#
 #-
 #----- On the Windows 10 Machine being accessed; enable OpenSSH:
