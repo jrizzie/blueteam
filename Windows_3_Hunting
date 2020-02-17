@@ -1,0 +1,82 @@
+#=================================================================================================
+#                                         Remoting
+#=================================================================================================
+#_PowerShell:             icm -cn <ip_addr> -cr <username> {command}
+#_WMIC:                   wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
+#_[sysinternals-PSexec>]: psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
+#-------------------------------------------------------- From command prompt:
+winrs -r:<Remote_IP> -u:<domain\Remote_user> -p:<passwd>
+#-------------------------------------------------------- From Powershell
+PS> $cred = get-credential
+PS> icm -cn <Remote_IP> -cr $cred {Powershell-commands}
+#
+#=================================================================================================
+#                                         General Info
+#=================================================================================================
+#______________________________________ Find "stuff:"
+# cmd_line----:  find [/c=count] "stuff" C:\*
+# PS>  dir "stuff" -path C:\ -Recurse
+# PS>  get-something | findstr /I .*stuff*
+# PS>  get-something | Select-String stuff
+#
+#______________________________________ Hashing and Transferring Files:
+#-copy with robocopy:  robocopy <file_to_be_copied__loc> \\<copy_destination> <source_filename>
+robocopy C:\ \\<Destination_IP>\C$\<path\file>
+scp <User@Remote_IP> </file/to/be/copied.extension> . 
+scp -r <all_current_directory> <user@Remote_IP:path/to/destination>
+#-PS----------> get-filehash -Algorithm [SHA1] 'C:\file.txt'
+#-CLI---------> cert-util -hashfile C:\<file>
+#-Remote CLI--> cert-util -hashfile \\<Remote_IP>\C$\<path\file>  
+#-Remote PS---> icm -cn <Remote_IP> -cr <dmn\user> {cert-util -hashfile 'C:\<path\file>' [SHA1]}
+#
+#______________________________________ General System info:
+nslookup <ip>
+systeminfo
+type C:\Windows\System32\drivers\etc\hosts
+#
+#______________________________________ Users:
+net user
+net localgroup
+net localgroup administrators
+net localgroup administrators /domain
+net group "Domain Admins" /domain
+PS> get-localuser
+PS> get-localgroup
+wmic useraccount list brief
+#
+#______________________________________ Query the registry & Startups:
+reg query: 
+<HKLM\software\microsoft\windows\currentversion\run>
+<HKCU\software\microsoft\windows\currentversion\run>
+<HKLM\software\microsoft\windows\currentversion\RunOnce>
+<HKCU\software\microsoft\windows\currentversion\RunOnce>
+<HKLM\system\currentcontrolset\enum\usbstor>
+<HKLM\system\currentcontrolset\enum>
+wmic startup list <full,bief,detailed>
+#
+#______________________________________ Processes & Service Enumeration:
+tasklist
+tasklist /FI "pid eq <PID#>"
+tasklist /svc | findstr /I [.*llhost*] [.*windefend*]
+wmic process list [brief/full]
+wmic process <PID#> get name,processid,parentprocessid,commandline
+wmic service /?
+#From CLI> sc qc                        # configuration data
+#From CLI> sc query                     # all runnin gservices
+#From CLI> sc queryex <servicename>     # all running cervices with PID
+#From CLI> sc qdescription <service>    #full desc. of service
+PS> Get-Process | findstr /I .*something*
+PS> get-service |Where-Object status -eq "Running"
+# PS TOOLS (From sysinternals folder)--------->>>
+psexec
+pslist
+#
+#______________________________________ Network things:
+netstat -[b]ano | findstr /I "listening"
+netstat -[b]ano | findstr /I "esablished"
+tracert google.com
+net view
+net use
+net share
+netsh interface portproxy show all
+#
