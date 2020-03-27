@@ -1,0 +1,44 @@
+1 - make sure you're on the right network
+	> ip a flush dynamic
+	> sudo dhclient
+
+2 - remove any old bullshit
+	> sudo apt autoremove
+
+3 - download ftp (vsftp)-very secure ftp
+	> sudo apt-get install vsftpd
+	> sudo apt-get update
+	> sudo apt-get upgrade
+
+  - change configuration file to allow local users from remote machines:
+	> vim /etc/vsftpd.conf
+		#> local_enable=YES
+		#> write_enable=YES
+
+4 - add FTP users:
+> adduser bob
+	> bob
+
+5 - make sure everything is working:
+	> sudo service vsftpd start
+	> netstat -pant
+		(should see port 21 is open; IF NOT:)
+			> purge vsftpd
+			> sudo apt autoremove
+			> reboot & re-install vsftpd
+
+6 - LOG IN to FTP (locally)
+	> ftp 127.0.0.1
+	> bob
+	> bob
+- Only test this for connectivity...
+
+------------------------------------------------------------
+log in remotely
+	> ftp <kali-IP-address>
+	> bob
+	> bob
+	> put <file>
+
+
+
