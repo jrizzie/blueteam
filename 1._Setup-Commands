@@ -1,0 +1,59 @@
+Command Sheet
+Configuring Linux MIP:
+Change the hostname first:
+> hostnamectl set-hostname <hostname>
+Add IP addresses to appropriate file:
+> sudo vi /etc/target.hosts
+> sudo vi /etc/trusted.hosts
+> sudo vi /etc/exclude.hosts
+Then set the firewall using the provided script and config files:
+> sudo set_firewall -tt -it <port>,<port>
+Then configure network settings using the GUI:
+Open Network Settings > Screwdriver and Wrench Icon > Network > Wired > Select IPv4 > Gear Icon
+Set Address: (Manual/Automatic), Address, Netmask, Gateway
+Set DNS: (Automatic/On/Off), Server
+Set Route: (Automatic/On/Off), Route, Netmask, Gateway, Metric
+Turn the interface off and back on in the GUI:
+Open Network Settings > Screwdriver and Wrench Icon > Network > Select Wired (On/Off)
+Alternatively, you can use the command line:
+> sudo ifdown <ens160>
+> sudo ifup <ens160>
+Verify settings with:
+> hostname
+> ip a
+> ip r
+> nslookup
+> server
+> exit
+Configuring Windows MIP
+Start by changing the hostname:
+> wmic computersystem where name="%computername%" call rename name="<newHostname>"
+Then reboot the computer for it to take effect
+Next Start the firewall service:
+> net start "windows defender firewall"
+Enable the firewall profiles:
+> netsh advfirewall set allprofiles state on
+Disable inbound exceptions:
+> netsh advfirewall set allprofiles firewallpolicy blockinboundalways,allowoutbound
+Delete all existing exceptions:
+> netsh advfirewall firewall delete rule name=all
+You can add dir=<in/out> if you only want to delete rules going in one direction. You can also delete a specific rule by specifying name="<rulename>". Next step is to add any exceptions specified by the directions:
+> netsh advfirewall firewall add rule name=<name> dir=<in/out> action=<allow/block> protocol=<tcp/udp/icmpv4;any,any) localport=<port> remoteip=<IP,IP,IP>
+Do not specify localport if blocking or using icmp. Next step is to allow inbound exceptions:
+> netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound
+You can verify the settings with:
+> netsh advfirewall show allprofiles
+You now need to set the IP address and DNS server. For a static IP:
+> netsh interface ipv4 set address <Ethernet0> static <IP> <Netmask> <Gateway> <1>
+You will probably need static, but in case you are asked to set up DHCP (DHCP Service must be started):
+> netsh interface ipv4 set address <Ethernet0> dchp
+For static DNS:
+> netsh interface ipv4 set dnsservers <Ethernet0> static <DNS IP> primary
+And if you need to second a secondary DNS server:
+> netsh interface ipv4 add dns <Ethernet0> <DNS IP> index=2
+If you need to setup DNS using DHCP:
+> netsh interface ipv4 set dnsservers <Ethernet0> dhcp
+The final step is to configure sharing:
+> ncpa.cpl
+Right click adapter > Properties > Check "Client for MS Networks" and "File and Printer Sharing for MS Networks"
+
