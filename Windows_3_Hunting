@@ -13,11 +13,14 @@ PS> icm -cn <Remote_IP> -cr $cred {Powershell-commands}
 #=================================================================================================
 #                                         General Info
 #=================================================================================================
-#______________________________________ Find "stuff:"
-# cmd_line----:  find [/c=count] "stuff" C:\*
-# PS>  dir "stuff" -path C:\ -Recurse
-# PS>  get-something | findstr /I .*stuff*
-# PS>  get-something | Select-String stuff
+#___________________________________________ Find "stuff:"
+# cli:>  find [/c=count] "stuff" C:\*
+#>  dir "stuff" -path C:\ -Recurse
+#>  get-something | findstr /I .*stuff*
+#>  get-something | Select-String stuff
+#                                       --   Find stuff remotely  --
+# icm -cn <dest-IP-addr> -cr <username> {
+gci -path C:\Users\IEUser\Downloads | select-string -Pattern "\d{3}-\d{2}-\d{4}" -AllMatches | fc} 
 #
 #______________________________________ Hashing and Transferring Files:
 #-copy with robocopy:  robocopy <file_to_be_copied__loc> \\<copy_destination> <source_filename>
