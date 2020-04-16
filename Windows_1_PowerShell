@@ -2,6 +2,10 @@
 ps> icm -cn<ip> -cr<user> {<command>}
 wmic> wmic /node:<ip> /user:<user> /password:<password> <command>
 winrs> winrs -r: <ip> -u:<user> -p:<password> <command>
+#
+# ------------>   1st- ENABLE WIN-RM   -------------->
+#> net start winrm
+#> Set-Item WSMan:\localhost\Client\TrustedHosts -Value "ADMIN-IP-ADDRESS"
 #==========================================================================
 #verb | noun
 Get-something
