@@ -1,11 +1,16 @@
 #------------------------------------------ important commands ------------------------------------------------------------
-ps> icm -cn<ip> -cr<user> {<command>}
-wmic> wmic /node:<ip> /user:<user> /password:<password> <command>
-winrs> winrs -r: <ip> -u:<user> -p:<password> <command>
+POWERSHELL  #> icm -cn<ip> -cr<user> {<command>}
+WMIC        #> wmic /node:<ip> /user:<user> /password:<password> <command>
+WINRS       #> winrs -r: <ip> -u:<user> -p:<password> <command>
 #
 # ------------>   1st- ENABLE WIN-RM   -------------->
-#> net start winrm
-#> Set-Item WSMan:\localhost\Client\TrustedHosts -Value "ADMIN-IP-ADDRESS"
+# --From the target machine:
+#- Enable pings to/from admin machine (firewall -> advanced -> new inbound rule -> all programs, icmp, [scope])
+#- Admin cli: #> net start winrm
+#> Enable-psremoting -skipnetworkprofilecheck -force
+# -
+# --From the Admin machine:
+#> group policy editor -> computer -> admin templates -> windows -> WinRM -> trusted hosts -> admin-IP-network
 #==========================================================================
 #verb | noun
 Get-something
