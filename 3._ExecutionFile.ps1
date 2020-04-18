@@ -35,7 +35,7 @@ $allhosts = Import-Csv C:\Users\jfizzie\Desktop\SURVEY\winhosts.csv
 $targets = $allhosts |
     Where-Object { $_.os -eq "win10"} |	
         Select-Object -ExpandProperty IP
-            Survey-Firewall -ComputerName $targets -Credential $creds |
+            Survey-Firewall -ComputerName $targets -cr $creds |
 	            Export-Csv ./All-Firewall-rules.csv
 
 # getting fancier --
