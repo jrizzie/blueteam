@@ -10,7 +10,7 @@ WINRS       #> winrs -r: <ip> -u:<user> -p:<password> <command>
 #> Enable-psremoting -skipnetworkprofilecheck -force
 # -
 # --From the Admin machine:
-#> group policy editor -> computer -> admin templates -> windows -> WinRM -> trusted hosts -> admin-IP-network
+#> group policy editor -> computer -> admin templates -> windows -> WinRM -> trusted hosts -> TARGET-IP-network
 #==========================================================================
 #verb | noun
 Get-something
