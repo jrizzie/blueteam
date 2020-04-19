@@ -1,26 +1,35 @@
 #=================================================================================================
-#                                         Remoting
+#                                         Remote Hunting With Powershell
 #=================================================================================================
-#_PowerShell:             icm -cn <ip_addr> -cr <username> {command}
-#_WMIC:                   wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
-#_[sysinternals-PSexec>]: psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
-#-------------------------------------------------------- From command prompt:
-winrs -r:<Remote_IP> -u:<domain\Remote_user> -p:<passwd>
-#-------------------------------------------------------- From Powershell
-PS> $cred = get-credential
-PS> icm -cn <Remote_IP> -cr $cred {Powershell-commands}
+# ------------ some basic shit ->
+# - [wmic]> wmic /node:<ip_addr> /user:<domain\user> /password:<password> <command>
+# - [psexec]> psexec \\<Remote_IP> -u <domain>\<user> -p:<passwd> cmd
+# - [winrs]> winrs -r:<Remote_IP> -u:<domain\Remote_user> -p:<passwd>
+# - [Powershell]> icm -cn <Remote_IP> -cr <username> {Powershell-commands}
+#-
+#_____________________________  1st - Enable remote Powershell [2-step process]  _____________________________  
+# [Step-1] (From tgt machine)
+# --> Enable pings to/from admin machine (firewall -> advanced -> new inbound rule -> all programs, icmp, [scope])
+# --> [Admin cli:]#> net start winrm
+# --> Enable-psremoting -skipnetworkprofilecheck -force
+# -----
+# [Step-2] (From admin machine)
+# --> group policy editor -> computer -> admin templates -> windows -> WinRM -> trusted hosts -> TARGET-IP-network
+#-
+#_____________________________  Find stuff remotely  _____________________________  #
+# - Find SSNs:
+# icm -cn <dest-IP-addr> -cr <username> {gci -path C:\Users\IEUser\Downloads | select-string -Pattern "\d{3}-\d{2}-\d{4}" -AllMatches | fc} 
+#
 #
 #=================================================================================================
-#                                         General Info
+#                                         Hunting ON THE BOX
 #=================================================================================================
 #___________________________________________ Find "stuff:"
 # cli:>  find [/c=count] "stuff" C:\*
 #>  dir "stuff" -path C:\ -Recurse
 #>  get-something | findstr /I .*stuff*
 #>  get-something | Select-String stuff
-#                                       --   Find stuff remotely  --
-# icm -cn <dest-IP-addr> -cr <username> {
-gci -path C:\Users\IEUser\Downloads | select-string -Pattern "\d{3}-\d{2}-\d{4}" -AllMatches | fc} 
+
 #
 #______________________________________ Hashing and Transferring Files:
 #-copy with robocopy:  robocopy <file_to_be_copied__loc> \\<copy_destination> <source_filename>
