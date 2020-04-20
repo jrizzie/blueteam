@@ -1,5 +1,3 @@
-$credential = get-credential justin
-
 #---------------------------------------------------
 # Lab 3 
 #
@@ -97,7 +95,7 @@ function Survey-Processes{
 	Process {
 		Invoke-Command -ComputerName $ComputerName -Credential $Credential {
 			Get-WmiObject win32_process |
-			Select-Object Name,ProcessID,Path,CommandLine,
+			Select-Object csname,Name,ProcessID,Path,CommandLine,
 				@{n="hash";e={ if($_.Path) {(certutil.exe -hashfile $_.Path SHA256)[1] -replace " ","" } else { $null } } },
 				@{n="user";e={$_.GetOwner().Domain + "\" + $_.GetOwner().User}}
 		} # End of Script Block
@@ -144,3 +142,8 @@ function Survey-Firewall{
 		} # End of Script Block
 	} # End of Process Block }
 }
+#---------------------------------------------------
+#    BONUS LAB
+#
+# - Baseline all of the autostart locations
+#
