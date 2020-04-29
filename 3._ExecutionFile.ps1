@@ -2,22 +2,25 @@
 
 # Setup
 $creds = Get-Credential -cr justin
-$allhosts = Import-Csv C:\Users\jfizzie\Desktop\SURVEY\winhosts.csv
+$allhosts = Import-Csv C:\Users\jfizzie\Desktop\BASELINE\winhosts.csv
 #------------------------------------------------------------------------
 
 # Lab 3
+# run setup (top of page)
 $targets = $allhosts |
 	    Select-Object -ExpandProperty IP
             Survey-Accounts -ComputerName $targets -Credential $creds |
 	            Export-Csv ./ALL-UserAccounts.csv
 
 # Lab 4
+# run setup (top of page)
 $targets = $allhosts |
 	Select-Object -ExpandProperty IP
         Survey-Services -ComputerName $targets -Credential $creds |
 	        Export-Csv ./All-Services.csv
 
 # Lab 5
+# run setup (top of page)
 $path = "C:\Windows\System32\drivers"
 $targets = $allhosts |
 	Select-Object -ExpandProperty IP
@@ -25,12 +28,14 @@ $targets = $allhosts |
 	        Export-Csv ./survey-filehash-All-sys32-drivers.csv
 
 # Lab 6
+# run setup (top of page)
 $targets = $allhosts |
 	Select-Object -ExpandProperty IP
         Survey-Processes -ComputerName $targets -Credential $creds |
 	        Export-Csv ./All-Processes-and-their-hashes.csv
 
 # Lab 7
+# run setup (top of page)
 $targets = $allhosts |
     Where-Object { $_.os -eq "win10"} |	
         Select-Object -ExpandProperty IP
@@ -39,6 +44,12 @@ $targets = $allhosts |
 
 
 # ---Bonus Lab---
+# run setup (top of page)
+$targets = $allhosts |
+    Where-Object { $_.os -eq "win10"} |	
+	    Select-Object -ExpandProperty IP
+            survey-AutoRuns -ComputerName $targets -Credential $creds |
+	            Export-Csv ./ALL-AUTORUNS.csv
 #
 # Survey & baseline all the autostart locations
 #

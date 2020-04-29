@@ -16,7 +16,7 @@ function Survey-Accounts {
 		If ( !$Credential) {$Credential = Get-Credential}
 	} # End of Begin Block
 	Process {
-		Invoke-Command -ComputerName $ComputerName -Credential $Credential -ScriptBlock {
+		Invoke-Command -ComputerName $Computername -Credential $Credential -ScriptBlock {
 			Get-WmiObject win32_UserAccount | Select-Object AccountType,Name,LocalAccount,Domain,SID
 		} # End of Script Block
 	} # End of Process Block
@@ -90,7 +90,7 @@ function Survey-Processes{
 		$Credential
 	)
 	Begin {
-		If ( !$Credential) {$Credential = Get-Credential}
+		If (!$Credential) {$Credential = Get-Credential}
 	} # End of Begin Block
 	Process {
 		Invoke-Command -ComputerName $ComputerName -Credential $Credential {
@@ -147,3 +147,46 @@ function Survey-Firewall{
 #
 # - Baseline all of the autostart locations
 #
+function survey-AutoRuns
+{[cmdletbinding()]
+Param
+(#computer name     [Parameter(ValueFromPipeline=$TRUE, Position=0)]
+                    [string[]] $computername,
+                    [pscredential] $Credential,
+                    [string[]] $RegistryAutoRunLoc )
+                    
+Begin
+{if (!$Credential) {$Credential = Get-Credential}}
+    Process
+    {icm -cn $computername -cr $Credential -ScriptBlock {
+    $autorundirs =  "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup",
+                "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\Startup"
+            foreach ($dir in $autoruns)
+                    {
+                        foreach ($file in (gci $dir -Recurse |?{$_.Extension}))
+                        {
+                        $data = @{type = "AutoRun Directory"
+                                file = $file.fullname
+                                hash = (certutil.exe -hashfile $file.fullname SHA256)[1] -replace " ", ""
+                                location = $dir
+                                command = $null }
+            New-Object -TypeName psobject -Property $data}}
+                foreach ($location in $using:RegistryAutoRunLoc)
+                    {if (!(Test-Path -path $location)) {continue}
+                        $reg = Get-Item -Path $location -ErrorAction SilentlyContinue
+                            foreach ($key in $reg.getvaluenames())
+                             {
+                                $command = $reg.getvalue($key)
+                                $file = $command -replace '\"', "" -replace "\.exe.*", ".exe"
+                                $data = @{type = "AutoRun Registry"
+                                    file = $file
+                                    hash = (.\certutil.exe -hashfile $file SHA256)[1] -replace " ",""
+                                    location = "$location\$key"
+                                    command = $command } #end of this thing...
+                                    New-Object -TypeName psobject -Property $data}
+                    }
+    }
+}
+}
+Export-ModuleMember -Function survey-*
+                    
