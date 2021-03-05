@@ -41,6 +41,7 @@ systeminfo
 #
 #====================  other basic commands ===============================================
 #
+Get-FileHash -Algorithm MD5 <FILE>
 Get-location 		(get the current directory)
 Set-Location 		(change the current directory / cd)
 New-Item		(create a new empty file or dir)
