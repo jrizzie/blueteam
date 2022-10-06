@@ -1,0 +1,140 @@
+Remoting Commands--
+cmd_prompt_as_Admin> 	winrs -r:<Remote_IP> -u:<domain\user> -p:<passwd>
+
+PowerShell_as_Admin>		$cred = get-credential
+  				icm -cn <IP> -cr $cred { <command> }
+System Information
+systeminfo 				# Show hostname, OS info, hotfix info, etc...
+
+Users and local administrators:
+net user 				# Show local users on system
+net localgroup 				# localgroups local system
+net localgroup administrators 		# Shows all users who are local admins on system
+net localgroup administrators /domain 	# To see all admins in domain.
+net group “Domain Admins” /domain 	# Query all domain groups on the DC
+Remote: <Sysinternals> psexec \\<IP> -u <domain\user> -p <passwd> -h net group “domain admins” /domain
+Process Enumeration:
+#PowerShell alt>  icm -cn <IP> -cr $cred <username> {get-process | select name,path,ID}
+tasklist 
+tasklist /FI “pid eq ##”
+wmic process list [brief/full]
+wmic process get name,processid,parentprocessid,commandline
+wmic process where “name like ‘%anything%’” [list/get] name,processid,parentprocessid,commandline
+wmic startup list [brief/full]
+
+Service Enumeration:
+tasklist /svc
+wmic service list [brief/full]
+wmic service get name,processid,startmode,state
+wmic service where “name like ‘%something%’” [list/get <]
+sc qc <service_name>			# configuration data
+sc query				# all running services
+sc queryex <service>			# all running services with PID
+sc qdescription <service>		# full description of service
+
+Registry Enumeration:
+reg query <HKLM...[key]>
+HKLM\System\currentcontrolset\enum\usbstor
+HKLM\System\currentctonrolset\enum\
+Query Host Files:
+type C:\Windows\System32\drivers\etc\hosts
+
+Network Activity:
+netstat –[b]ano
+netsh interface portproxy show all
+# output to file:  netstat –[b]ano > <output.txt>  
+
+Hashing files:
+certutil –hashfile <path\to\file.txt> [SHA1/MD5/SHA256]
+Powershell> get-filehash <path\to\file.txt> -algorithm [SHA1/MD5/SHA256]
+Displaying & Finding files/strings
+<command> | find “something” 		# /i-not case sensitive /c-count /v-inverse(NOT)			
+<command> | findstr /i .*stuff*  		# /i-not case sensitive .**-wildcards before & after
+find “stuff” .\*  #_Find “stuff” recursively within current directory
+
+PowerShell>  <command> | findstr /I .*More Stuff*
+PowerShell>  <command> | select-string .*Even More Stuff*
+PowerShell> get-content <file.txt>
+
+HUNT – UNUSUAL Processes: ___________________________________________________
+	Technique #1
+# 	compare processes from {BASELINE} against {TARGET}
+wmic process list [brief/full]
+wmic process get name,processid,parentprocessid,commandline
+#	copy <suspicious_port> & <suspicious_PID>
+wmic process <Suspicious_PID> get name,commandline,parentprocessid,commandline
+#	copy commandline*  “C:\users\path\file.exe –L –p <port> and parent processid”
+#	hash the suspicious .exe
+____________________________________________________________________________
+ 	Technique #2
+#	look for weird processes associated to the PID and ParentProcess ID of suspicous exe found in “Technique 1”
+wmic process get name,processid,parentprocessid,commandline | find “<PID_and/or_ParentProcessID>
+wmic process get name,processid,parentprocessid,commandline | findstr /I “<[PID]/[ParentProcessID]>
+
+____________________________________________________________________________
+ 	Technique #3
+#	look for wmic process get name,commandline,parentprocessid,commandline for every weird pathname
+wmic process <Suspicious_PID> get name,commandline,parentprocessid,commandline
+ ____________________________________________________________________________
+ 	Technique #4
+# 	look for arbitrary executables running out of unusual locations
+wmic process get name,processid,parentprocessid,commandline
+#	(explorer.exe is supposed to run out of C:\Windows)
+# 	(most other key processes are supposed torun out of C:\Windows\System32…)
+#	(most executables are supposed to run from C:\Windows\ProgramFiles…)
+
+
+
+
+
+
+
+Commands From Class Board
+Remoting:
+Powershell: 		icm -cn <IP> -cr <user> { <command> }
+Powershell: 		icm -cn <IP> -cr $cred <user> { <command> }
+WMIC:		wmic /node:<IP> /user:<user> /password:<password> <command>
+WINRS:		winrs -r:<IP> -u:<user> -p:<password> <command>
+C:\User\Public\Desktop\Sysinternals: psexec \\<IP> -u <User> -p <Password> <Command>
+
+WMIC Commands
+wmic process where name="<name>" list/get name, processid, parentprocessid, commandline
+wmic process where "name like '<name>'" list/get name, processid, parentprocessid, commandline
+wmic process <PID> list/get name, processid, parentprocessid, commandline
+wmic startup list full/brief							/ = OR
+
+
+System & Network Information
+hostname --> systeminfo					P.S. Get-Host
+wmic QFE --> systeminfo(hotfix)					P.S. Get-Hotfix
+netstat -ano  							P.S. Get-NetTCPConnection
+find  								P.S. Select-String
+netsh interface portproxy show all
+
+
+Processes and Services
+Regquery 							P.S. Get-ChildItem	
+P.S. Get-ItemProperty
+
+tasklist /svc /m /fi 	Filtering: (Imagename eq name)		P.S. Get-process
+							P.S. Get-services
+
+Type <File>							P.S. Get-Content <File>
+
+CertUtil -Hashfile <File> SHA#(Algorithm)				P.S. Get-FileHash <File> -Algorithm SHA#(Algorithm)
+
+Net User					#Provides user info
+Net LocalGroup Administrators			#Provides admin info
+Net Group "Domain Admins" /domain
+
+Hotfix Info
+Hostname ----- 		CMD: Systeminfo 			P.S. Get-Host
+WMIC QFE-----		CMD: Systeminfo				P.S. Get-Hotfix
+Connection Info	CMD: netstat -ano			P.S. Get-NetTCPConnection
+Searching		CMD: Find				P.S. Select-String
+
+Net User					# Provides user info
+Net LocalGroup Administrators			# Provides admin info
+Net Group "Domain Admins" /domain		# Domain stuff
+<Fm-Sysinternals> psexec \\<IP> -u <domain\user> -p <passwd> -h net group “domain admins” /domain # Remote Domain
+
